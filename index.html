@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OMYC — Sistema Integrado de Envío de Madera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root {
+  --c-navy:#07121d; --c-n800:#0b1a28; --c-n700:#0f2236; --c-n600:#142c46; --c-n500:#1a3858;
+  --c-blue:#1355a8; --c-blue2:#1769cc; --c-blue3:#2196f3; --c-sky:#03a8d4; --c-sky-gl:rgba(3,168,212,.16);
+  --c-teal:#00897b; --c-gold:#e8a820; --c-ok:#1eb87a; --c-warn:#f59e0b; --c-err:#e8424e; --c-violet:#7c5cbf;
+  --s-1:#0d1f30; --s-2:#122538; --s-3:#182f46; --s-4:#1e3a55;
+  --bd:#1c3550; --bd2:#264c6e; --tx:#cce2f8; --tx2:#6499be; --tx3:#2f5878;
+  --sb-w:280px; --sb-c:68px; --hh:60px; --r:14px; --rs:8px; --rx:5px;
+  --sh:0 8px 30px rgba(0,0,0,.5); --shs:0 3px 14px rgba(0,0,0,.35);
+  --ease:cubic-bezier(.4,0,.2,1); --t:.2s;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--c-n800)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px}
+#sb{position:fixed;top:0;left:0;width:var(--sb-w);height:100vh;background:var(--c-n800);border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:1000;transition:width var(--t) var(--ease);overflow:hidden}
+#sb.col{width:var(--sb-c)}
+.sb-hd{height:var(--hh);display:flex;align-items:center;gap:10px;padding:0 15px;border-bottom:1px solid var(--bd);flex-shrink:0;background:linear-gradient(135deg,var(--c-n700),var(--c-n800))}
+.logo-mark{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--c-blue),var(--c-sky));display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff}
+.logo-txt{overflow:hidden;transition:opacity var(--t)}
+.logo-txt .l1{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;white-space:nowrap}.logo-txt .l1 span{color:var(--c-sky)}
+.logo-txt .l2{font-size:10px;color:var(--tx2);white-space:nowrap;letter-spacing:.4px}
+#sb.col .logo-txt{opacity:0;width:0}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0}
+.sn-sec{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);padding:14px 16px 5px;white-space:nowrap;transition:opacity var(--t)}
+#sb.col .sn-sec{opacity:0}
+.sn-btn{width:100%;background:transparent;border:none;display:flex;align-items:center;gap:10px;padding:9px 14px;color:var(--tx2);cursor:pointer;text-align:left;transition:background var(--t),color var(--t);position:relative;font-family:'DM Sans',sans-serif}
+.sn-btn:hover{background:var(--s-2);color:var(--tx)}.sn-btn.on{background:linear-gradient(90deg,rgba(19,85,168,.2),transparent);color:var(--c-sky)}
+.sn-btn.on::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--c-blue3),var(--c-sky));border-radius:0 2px 2px 0}
+.sn-ic{width:32px;height:32px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:var(--s-3)}
+.sn-btn.on .sn-ic{background:rgba(3,168,212,.15);color:var(--c-sky)}
+.sn-lbl{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;transition:opacity var(--t),width var(--t)}
+#sb.col .sn-lbl{opacity:0;width:0}
+.sn-bdg{margin-left:auto;flex-shrink:0;background:var(--c-blue);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px;transition:opacity var(--t)}
+#sb.col .sn-bdg{opacity:0}
+.sb-ft{border-top:1px solid var(--bd);padding:11px 14px;display:flex;align-items:center;gap:9px;flex-shrink:0}.sb-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--c-blue),var(--c-sky));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}.sb-usr{overflow:hidden}.sb-usr .un{font-size:12px;font-weight:600;white-space:nowrap}.sb-usr .ur{font-size:10px;color:var(--tx2);white-space:nowrap}#sb.col .sb-usr{opacity:0;width:0}
+#mn{margin-left:var(--sb-w);min-height:100vh;display:flex;flex-direction:column;transition:margin-left var(--t) var(--ease)}#mn.ex{margin-left:var(--sb-c)}
+#tb{height:var(--hh);background:var(--c-n800);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:9px;padding:0 20px;position:sticky;top:0;z-index:900}
+#btn-tog{width:34px;height:34px;border-radius:var(--rs);background:var(--s-3);border:1px solid var(--bd);color:var(--tx2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;flex-shrink:0}.pg-t{font-size:15px;font-weight:600}.pg-s{font-size:10.5px;color:var(--tx2)} .tb-r{display:flex;gap:7px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.tb-btn{height:34px;padding:0 13px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--s-3);color:var(--tx2);font-size:12px;font-weight:500;display:flex;align-items:center;gap:5px;cursor:pointer;transition:all var(--t);font-family:'DM Sans',sans-serif}.tb-btn:hover{color:var(--tx);border-color:var(--bd2)}.tb-btn.pri{background:linear-gradient(135deg,var(--c-blue),var(--c-blue2));border-color:var(--c-blue2);color:#fff}.tb-btn.ok{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-color:#059669}
+#ct{flex:1;padding:20px}
+.vtabs{display:flex;gap:3px;background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);padding:4px;width:fit-content;margin-bottom:16px}.vtab{padding:6px 15px;border-radius:var(--rs);border:none;background:transparent;color:var(--tx2);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif}.vtab.on{background:var(--c-blue);color:#fff}.vp{display:none}.vp.on{display:block}
+.fbar{background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);padding:14px 17px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.fg{display:flex;flex-direction:column;gap:4px}.fg label{font-size:9.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px}
+.fi,.fs{background:var(--s-2);border:1px solid var(--bd);color:var(--tx);border-radius:var(--rs);padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;height:34px;outline:none}.fi.w{min-width:240px}.fs{min-width:120px}
+.f-clr{background:transparent;border:1px solid var(--bd);color:var(--tx2);height:34px;padding:0 12px;border-radius:var(--rs);cursor:pointer;font-size:11.5px;display:flex;align-items:center;gap:5px;margin-left:auto}
+.f-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}.chip{background:rgba(19,85,168,.2);border:1px solid rgba(33,150,243,.3);color:var(--c-blue3);font-size:10.5px;font-weight:500;padding:2px 9px;border-radius:11px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.sc{background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);padding:15px 16px;position:relative;overflow:hidden}.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sc-a,var(--c-blue))}.sc-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}.sc-ic{width:36px;height:36px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--sc-ib,rgba(19,85,168,.15));color:var(--sc-ic,var(--c-blue3))}.sc-v{font-size:24px;font-weight:700;font-family:'Space Mono',monospace;line-height:1;margin-bottom:3px}.sc-l{font-size:11.5px;color:var(--tx2)}.sc-s{font-size:10px;color:var(--tx3);margin-top:4px}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}@media(max-width:900px){.cg{grid-template-columns:1fr}}.cc{background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);padding:16px}.cc-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.cc-t{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}.cc-b{font-size:10px;color:var(--tx2);background:var(--s-3);padding:2px 8px;border-radius:9px}.cc-wrap{position:relative;height:220px;width:100%}
+.layout-2{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}.panel{background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}.panel-h{padding:13px 17px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap}.panel-t{font-size:14px;font-weight:600}.panel-sub{font-size:11px;color:var(--tx2)}
+.tscr{overflow:auto;max-height:62vh}table{width:100%;border-collapse:collapse;font-size:12px}thead th{background:var(--s-2);padding:8px 13px;text-align:left;font-size:10px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--bd);white-space:nowrap}tbody tr{border-bottom:1px solid var(--bd)}tbody tr:hover{background:var(--s-2)}td{padding:9px 13px;vertical-align:middle}.tm{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--tx2)}.tb2{font-weight:500}.bm{padding:2px 8px;border-radius:9px;font-size:10.5px;font-weight:600;display:inline-block}.m-rama{background:rgba(3,168,212,.18);color:var(--c-sky)}.m-troza{background:rgba(232,168,32,.18);color:var(--c-gold)}.m-otro{background:rgba(124,92,191,.2);color:#c4b5fd}.chk{text-align:center}.ba{width:26px;height:26px;border-radius:5px;border:1px solid var(--bd);background:var(--s-3);color:var(--tx2);display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;cursor:pointer}.ba.v:hover{background:rgba(3,168,212,.14);color:var(--c-sky);border-color:rgba(3,168,212,.3)}
+.sel-wrap{padding:14px 16px}.selected-list{display:grid;gap:8px;max-height:220px;overflow:auto}.sel-item{padding:10px 12px;background:var(--s-2);border:1px solid var(--bd);border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}.sel-item small{display:block;color:var(--tx2);margin-top:2px}.rm{background:#3a1820;color:#ffb4be;border:1px solid #6c2234;padding:8px 10px;border-radius:10px;cursor:pointer}
+.form-card{background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-top:16px}.form-grid{padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.form-grid label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px}.form-grid input{width:100%;background:var(--s-2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;color:var(--tx)}.span-2{grid-column:span 2}.span-3{grid-column:span 3}
+.mwrap{display:grid;grid-template-columns:1fr 280px;gap:12px}.msd{background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden}.msd-hd{padding:11px 14px;border-bottom:1px solid var(--bd);font-size:12.5px;font-weight:600}.msd-bd{flex:1;overflow-y:auto}.mi{padding:9px 13px;border-bottom:1px solid var(--bd);cursor:pointer;display:flex;gap:8px;align-items:flex-start}.mi:hover{background:var(--s-2)}.mi.hi{background:rgba(3,168,212,.08);border-left:3px solid var(--c-sky)}.mi-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}.mi-n{font-size:12px;font-weight:500}.mi-m{font-size:10.5px;color:var(--tx2);margin-top:1px}#map{height:560px;border-radius:var(--r);border:1px solid var(--bd)}
+.leaflet-container{background:var(--c-navy)!important}.xp .leaflet-popup-content-wrapper{background:var(--s-2)!important;border:1px solid var(--bd2)!important;border-radius:var(--r)!important;color:var(--tx)!important}.xp .leaflet-popup-tip{background:var(--s-2)!important}.xp .leaflet-popup-content{margin:0!important}.pp-in{padding:12px 14px;min-width:190px}.pp-r{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;gap:8px}.pp-r span{color:var(--tx2)}.pp-r b{color:var(--tx);text-align:right}
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:2000;display:none;align-items:center;justify-content:center;padding:14px}.mov.on{display:flex}.mbox{background:var(--c-n700);border:1px solid var(--bd2);border-radius:var(--r);width:100%;max-width:720px;max-height:93vh;display:flex;flex-direction:column;box-shadow:var(--sh)}.mhd{padding:14px 19px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}.mhd-t{font-size:14.5px;font-weight:600;display:flex;gap:8px;align-items:center}.mhd-t i{color:var(--c-sky)}.mx{width:28px;height:28px;border-radius:5px;background:var(--s-3);border:1px solid var(--bd);color:var(--tx2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px}.mbd{padding:18px;overflow-y:auto;flex:1}.mft{padding:12px 19px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px}.msec{background:var(--s-3);border:1px solid var(--bd);color:var(--tx2);height:36px;padding:0 15px;border-radius:var(--rs);cursor:pointer}.mpri{background:linear-gradient(135deg,var(--c-blue),var(--c-blue2));border:none;color:#fff;height:36px;padding:0 18px;border-radius:var(--rs);cursor:pointer;display:flex;align-items:center;gap:6px}.dg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.di .dk{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--tx3);margin-bottom:2px}.di .dv{font-size:12.5px;font-weight:500}
+#tsts{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px}.tst{background:var(--s-2);border:1px solid var(--bd2);border-radius:var(--rs);padding:10px 14px;min-width:240px;display:flex;align-items:center;gap:8px;box-shadow:var(--sh);font-size:12px}.tst.ok{border-left:3px solid var(--c-ok)}.tst.er{border-left:3px solid var(--c-err)}.tst.in{border-left:3px solid var(--c-blue3)}.tst.wn{border-left:3px solid var(--c-warn)}
+.modal{position:fixed;inset:0;background:rgba(4,8,15,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:3000}.modal.show{display:flex}.sheet-shell{width:min(1120px,96vw);max-height:92vh;overflow:auto;background:white;border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.45)}.sheet-actions{position:sticky;top:0;z-index:3;background:#f3f6fb;border-bottom:1px solid #d8dee8;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.sheet{padding:18px 18px 24px;color:#111827;background:white}.doc{border:2px solid #111827;padding:16px;font-family:Inter,Arial,sans-serif}.doc-header{display:grid;grid-template-columns:1fr 160px;gap:12px;align-items:start}.doc-title{text-align:center}.doc-title h2{margin:0;font-size:20px;line-height:1.25;font-weight:800;text-transform:uppercase}.logo-box{border:1.5px solid #111827;min-height:98px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#6b7280;text-align:center;padding:10px}.box-grid{display:grid;grid-template-columns:170px 1fr 120px 1fr 90px 1fr;gap:0;margin-top:14px;border-top:1px solid #111827;border-left:1px solid #111827}.cell{border-right:1px solid #111827;border-bottom:1px solid #111827;padding:8px 10px;min-height:40px;font-size:14px}.cell.label{background:#f8fafc;font-weight:700}.cell.value{font-weight:600}.section-title{text-align:center;font-size:18px;font-weight:800;margin-top:12px;padding:6px 0;border-left:1px solid #111827;border-right:1px solid #111827;border-top:1px solid #111827}.doc-table{width:100%;border-collapse:collapse;border:1px solid #111827}.doc-table th,.doc-table td{border:1px solid #111827;padding:7px 8px;font-size:13px}.doc-table th{background:#f8fafc;text-transform:uppercase}.tot-row td{font-weight:800;background:#f8fafc}.summary-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;border-left:1px solid #111827;border-right:1px solid #111827;border-bottom:1px solid #111827}.summary-left,.summary-right{min-height:180px}.summary-right{border-left:1px solid #111827}.summary-head{text-align:center;font-weight:800;font-size:16px;padding:6px 0;border-bottom:1px solid #111827;background:#f8fafc}.summary-table{width:100%;border-collapse:collapse}.summary-table th,.summary-table td{border-bottom:1px solid #111827;border-right:1px solid #111827;padding:7px 8px;font-size:13px}.summary-table th:last-child,.summary-table td:last-child{border-right:0}.sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-left:1px solid #111827;border-right:1px solid #111827;border-bottom:1px solid #111827}.sign-col{padding:12px;border-right:1px solid #111827}.sign-col:last-child{border-right:0}.sign-row{display:grid;grid-template-columns:170px 1fr;gap:10px;align-items:center;margin-bottom:16px}.sign-line{border-bottom:1px solid #111827;height:26px}.foot{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 4px 0;font-weight:800}.foot small{font-weight:700}
+@media print{body{background:white}.sheet-actions{display:none!important}.sheet-shell{width:auto;max-height:none;overflow:visible;border-radius:0;box-shadow:none}.sheet{padding:0}}
+@media (max-width:1180px){.layout-2{grid-template-columns:1fr}.form-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:900px){.mwrap,.cg,.doc-header,.summary-wrap,.sign-grid{grid-template-columns:1fr}.summary-right{border-left:0;border-top:1px solid #111827}.sign-col{border-right:0}.box-grid{grid-template-columns:150px 1fr}.form-grid{grid-template-columns:1fr}.span-2,.span-3{grid-column:auto}}
+@media (max-width:768px){#sb{transform:translateX(-100%)}#sb.mob{transform:translateX(0)}#mn{margin-left:0!important}#ct{padding:12px}.fbar{flex-direction:column}.fi.w{width:100%}.dg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav id="sb">
+  <div class="sb-hd">
+    <div class="logo-mark"><i class="fa-solid fa-tree"></i></div>
+    <div class="logo-txt">
+      <div class="l1">Sistema <span>OMYC</span></div>
+      <div class="l2">Inventario + envío interno</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sn-sec">Principal</div>
+    <button class="sn-btn on" onclick="sv('stats')"><div class="sn-ic"><i class="fa-solid fa-gauge-high"></i></div><span class="sn-lbl">Panel General</span></button>
+    <button class="sn-btn" onclick="sv('table')"><div class="sn-ic"><i class="fa-solid fa-table-list"></i></div><span class="sn-lbl">Inventario</span><span class="sn-bdg" id="sb-n">0</span></button>
+    <button class="sn-btn" onclick="sv('map')"><div class="sn-ic"><i class="fa-solid fa-map-location-dot"></i></div><span class="sn-lbl">Mapa</span></button>
+    <button class="sn-btn" onclick="sv('envio')"><div class="sn-ic"><i class="fa-solid fa-truck-fast"></i></div><span class="sn-lbl">Formulario de envío</span><span class="sn-bdg" id="sb-sel">0</span></button>
+    <div class="sn-sec">Herramientas</div>
+    <button class="sn-btn" onclick="expCSV()"><div class="sn-ic"><i class="fa-solid fa-file-csv"></i></div><span class="sn-lbl">Exportar CSV</span></button>
+  </div>
+  <div class="sb-ft">
+    <div class="sb-av">NC</div>
+    <div class="sb-usr"><div class="un">Néstor Caal</div><div class="ur">Survey123 / ArcGIS</div></div>
+  </div>
+</nav>
+<div id="mn">
+  <header id="tb">
+    <button id="btn-tog" onclick="togSB()"><i class="fa-solid fa-bars"></i></button>
+    <div>
+      <div class="pg-t" id="pg-t">Panel General</div>
+      <div class="pg-s" id="pg-s">Resumen estadístico del inventario forestal</div>
+    </div>
+    <div class="tb-r">
+      <button class="tb-btn" onclick="expCSV()"><i class="fa-solid fa-download"></i><span class="d-none d-md-inline">CSV</span></button>
+      <button class="tb-btn" onclick="reload()"><i class="fa-solid fa-rotate"></i><span class="d-none d-md-inline">Actualizar</span></button>
+      <button class="tb-btn ok" onclick="sv('envio')"><i class="fa-solid fa-truck-fast"></i><span class="d-none d-md-inline">Ir a envío</span></button>
+      <button class="tb-btn pri" onclick="openPreview()" id="topPreviewBtn" disabled><i class="fa-solid fa-file-lines"></i><span class="d-none d-md-inline">Boleta</span></button>
+    </div>
+  </header>
+  <main id="ct">
+    <div class="fbar">
+      <div class="fg"><label>Buscar</label><input class="fi w" id="f-s" placeholder="Especie, tipo, cuadrante, árbol, bacadilla…" oninput="af()"></div>
+      <div class="fg"><label>Bacadilla</label><select class="fs" id="f-b" onchange="af()"><option value="">Todas</option></select></div>
+      <div class="fg"><label>Cuadrante</label><select class="fs" id="f-c" onchange="af()"><option value="">Todos</option></select></div>
+      <div class="fg"><label>Tipo</label><select class="fs" id="f-t" onchange="af()"><option value="">Todos</option></select></div>
+      <div class="fg"><label>Especie</label><select class="fs" id="f-e" onchange="af()"><option value="">Todas</option></select></div>
+      <button class="f-clr" onclick="rf()"><i class="fa-solid fa-xmark"></i> Limpiar</button>
+    </div>
+    <div class="f-chips" id="f-chips"></div>
+    <div class="vtabs">
+      <button class="vtab on" id="tab-stats" onclick="sv('stats')"><i class="fa-solid fa-gauge-high"></i>Estadísticas</button>
+      <button class="vtab" id="tab-table" onclick="sv('table')"><i class="fa-solid fa-table-cells"></i>Inventario</button>
+      <button class="vtab" id="tab-map" onclick="sv('map')"><i class="fa-solid fa-map"></i>Mapa</button>
+      <button class="vtab" id="tab-envio" onclick="sv('envio')"><i class="fa-solid fa-truck-fast"></i>Formulario de envío</button>
+    </div>
+
+    <div class="vp on" id="vp-stats">
+      <div class="sg" id="sg"></div>
+      <div class="cg">
+        <div class="cc"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-chart-column" style="color:var(--c-blue3)"></i>Registros por especie</span><span class="cc-b" id="cb1">—</span></div><div class="cc-wrap"><canvas id="ch1"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-circle-half-stroke" style="color:var(--c-sky)"></i>Distribución por tipo</span><span class="cc-b" id="cb2">—</span></div><div class="cc-wrap"><canvas id="ch2"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-border-all" style="color:var(--c-gold)"></i>Frecuencia por cuadrante</span><span class="cc-b">Frecuencia</span></div><div class="cc-wrap"><canvas id="ch3"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-ruler-combined" style="color:var(--c-ok)"></i>Volumen acumulado por especie</span><span class="cc-b" id="cb4">m³</span></div><div class="cc-wrap"><canvas id="ch4"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="vp" id="vp-table">
+      <div class="layout-2">
+        <section class="panel">
+          <div class="panel-h"><div><div class="panel-t">Registros del inventario</div><div class="panel-sub" id="th-c"></div></div></div>
+          <div class="tscr">
+            <table>
+              <thead>
+                <tr>
+                  <th class="chk"><input type="checkbox" id="selectPage"></th>
+                  <th>ID</th>
+                  <th>Bacadilla</th>
+                  <th>Cuadrante</th>
+                  <th>Árbol</th>
+                  <th>Sección</th>
+                  <th>Tipo</th>
+                  <th>Especie</th>
+                  <th>D1</th>
+                  <th>D2</th>
+                  <th>Largo</th>
+                  <th>Volumen</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </section>
+        <aside class="panel">
+          <div class="panel-h"><div><div class="panel-t">Carrito de envío</div><div class="panel-sub">Registros seleccionados para la boleta</div></div></div>
+          <div class="sel-wrap">
+            <div class="selected-list" id="selectedList"><div style="color:var(--tx2)">Aún no has seleccionado registros.</div></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="vp" id="vp-map">
+      <div class="mwrap">
+        <div id="map"></div>
+        <div class="msd">
+          <div class="msd-hd">Registros (<span id="mc">0</span>)</div>
+          <div class="msd-bd" id="ml"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vp" id="vp-envio">
+      <div class="layout-2">
+        <section>
+          <div class="sg" id="shipmentStats"></div>
+          <div class="panel">
+            <div class="panel-h"><div><div class="panel-t">Registros incluidos en el envío</div><div class="panel-sub">Selecciona registros desde la tabla del inventario.</div></div></div>
+            <div class="tscr" style="max-height:420px">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Cuadrante</th>
+                    <th>No. troza</th>
+                    <th>Sección</th>
+                    <th>Tipo</th>
+                    <th>Especie</th>
+                    <th>Vol. m³</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="shipmentTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section class="form-card">
+          <div class="panel-h"><div><div class="panel-t">Datos del envío</div><div class="panel-sub">El correlativo lo llenas manualmente.</div></div></div>
+          <div class="form-grid">
+            <div><label>Guía No.</label><input id="guiaNo" placeholder="Ej. 001-2026"></div>
+            <div><label>Envío No. / correlativo</label><input id="envioNo" placeholder="Ej. OMYC-0001"></div>
+            <div><label>Fecha</label><input id="fecha" type="date"></div>
+            <div><label>Licencia forestal</label><input id="licenciaForest" placeholder="Número de licencia"></div>
+            <div class="span-2"><label>Destino</label><input id="destino" placeholder="Destino del envío"></div>
+            <div><label>Conductor</label><input id="conductor" placeholder="Nombre del conductor"></div>
+            <div><label>Licencia No.</label><input id="licenciaConductor" placeholder="Número de licencia del conductor"></div>
+            <div><label>Vehículo</label><input id="vehiculo" placeholder="Tipo de vehículo"></div>
+            <div><label>No. placas</label><input id="placas" placeholder="Placas"></div>
+            <div><label>Marca</label><input id="marca" placeholder="Marca del vehículo"></div>
+            <div><label>Color</label><input id="color" placeholder="Color"></div>
+            <div><label>Despachado por</label><input id="despachadoPor" placeholder="Nombre"></div>
+            <div><label>Conductor responsable</label><input id="conductorResp" placeholder="Nombre"></div>
+            <div><label>Encargado Aserradero</label><input id="encargadoAserradero" placeholder="Nombre"></div>
+            <div class="span-3" style="display:flex;justify-content:flex-end;gap:10px;margin-top:4px">
+              <button class="msec" onclick="clearShipmentForm()">Limpiar formulario</button>
+              <button class="mpri" onclick="openPreview()" id="envioPreviewBtn" disabled><i class="fa-solid fa-file-lines"></i> Generar boleta</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="mov" id="mo-d">
+  <div class="mbox" style="max-width:620px">
+    <div class="mhd"><div class="mhd-t"><i class="fa-solid fa-eye"></i>Detalle del registro</div><button class="mx" onclick="cm('mo-d')"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="mbd" id="dbd"></div>
+    <div class="mft"><button class="msec" onclick="cm('mo-d')">Cerrar</button></div>
+  </div>
+</div>
+
+<div id="tsts"></div>
+
+<div class="modal" id="previewModal">
+  <div class="sheet-shell">
+    <div class="sheet-actions">
+      <div>Vista previa de la boleta. Usa imprimir para guardar en PDF.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="msec" onclick="closePreview()">Cerrar</button>
+        <button class="mpri" onclick="printPreview()"><i class="fa-solid fa-print"></i> Imprimir / PDF</button>
+      </div>
+    </div>
+    <div class="sheet">
+      <div class="doc" id="printArea">
+        <div class="doc-header">
+          <div class="doc-title">
+            <h2>ENVÍO INTERNO DE MADERA CERTIFICADA EN ROLLO</h2>
+            <h2>UNIDAD DE MANEJO UAXACTÚN, FLORES, PETÉN</h2>
+          </div>
+          <div class="logo-box">
+  <img src="https://visituaxactun.com/omyc/wp-content/uploads/2020/07/Logo-OMYC-Footer.png" 
+       style="max-width:100%; max-height:90px;">
+</div>
+        </div>
+        <div class="box-grid">
+          <div class="cell label">Guía No.</div><div class="cell value" id="outGuia"></div>
+          <div class="cell label">Envío No.</div><div class="cell value" id="outEnvio"></div>
+          <div class="cell label">Fecha</div><div class="cell value" id="outFecha"></div>
+          <div class="cell label">Licencia forestal</div><div class="cell value" id="outLicForest"></div>
+          <div class="cell label">Destino</div><div class="cell value" id="outDestino"></div>
+          <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
+          <div class="cell label">Conductor</div><div class="cell value" id="outConductor"></div>
+          <div class="cell label">Licencia No.</div><div class="cell value" id="outLicCond"></div>
+          <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
+          <div class="cell label">Vehículo</div><div class="cell value" id="outVehiculo"></div>
+          <div class="cell label">No. placas</div><div class="cell value" id="outPlacas"></div>
+          <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
+          <div class="cell label">Marca</div><div class="cell value" id="outMarca"></div>
+          <div class="cell label">Color</div><div class="cell value" id="outColor"></div>
+          <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
+        </div>
+        <div class="section-title">CADENA DE CUSTODIA</div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Cuadrante</th>
+              <th>No. troza</th>
+              <th>Sección</th>
+              <th>Tipo*</th>
+              <th>Especie</th>
+              <th>Vol. m³</th>
+            </tr>
+          </thead>
+          <tbody id="shipmentRows"></tbody>
+          <tfoot>
+            <tr class="tot-row">
+              <td colspan="5" style="text-align:center">TOTAL</td>
+              <td id="shipmentTotal">0.00</td>
+            </tr>
+          </tfoot>
+        </table>
+        <div class="summary-wrap">
+          <div class="summary-left"></div>
+          <div class="summary-right">
+            <div class="summary-head">RESUMEN</div>
+            <table class="summary-table">
+              <thead>
+                <tr>
+                  <th>Cantidad</th>
+                  <th>Tipo</th>
+                  <th>Especie</th>
+                  <th>Volumen</th>
+                </tr>
+              </thead>
+              <tbody id="summaryRows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sign-grid">
+          <div class="sign-col">
+            <div class="sign-row"><div><b>Despachado por:</b></div><div class="sign-line" id="outDespachado"></div></div>
+            <div class="sign-row"><div><b>Conductor responsable:</b></div><div class="sign-line" id="outConductorResp"></div></div>
+            <div class="sign-row"><div><b>Encargado Aserradero:</b></div><div class="sign-line" id="outEncargado"></div></div>
+          </div>
+          <div class="sign-col">
+            <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
+            <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
+            <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
+          </div>
+        </div>
+        <div class="foot">
+          <div><small>*T = troza &nbsp;&nbsp; *R = rama &nbsp;&nbsp; *RE = ramas escuadras</small></div>
+          <div>PBN-FM/COC-000161 &nbsp;&nbsp;&nbsp; FSC 100%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const SERVICE_ITEM_URL = 'https://pacunam.maps.arcgis.com/home/item.html?id=2c0cbdfd0c5a421b90d28a7334c12196';
+const SERVICE_URL = 'https://services3.arcgis.com/9GZJC0D1FF3Zfm0K/ArcGIS/rest/services/survey123_39f772da5e694ec389cf4da11dcdb0ba_results/FeatureServer/0';
+const QUERY_URL = SERVICE_URL + '/query?where=1=1&outFields=*&returnGeometry=true&f=json';
+let DB = [];
+let flt = { s:'', b:'', c:'', t:'', e:'' };
+let filtered = [];
+let selected = new Map();
+let lmap = null;
+let lmk = [];
+let chts = {};
+
+function safe(v, fb='—'){ return v === null || v === undefined || v === '' ? fb : v; }
+function fmtNum(v, d=2){ const n = Number(v); return Number.isFinite(n) ? n.toFixed(d) : '—'; }
+function fmtDate(ms){ if(!ms) return '—'; const d = new Date(ms); return isNaN(d) ? '—' : d.toLocaleString('es-GT'); }
+function tipoCls(t){ if(t === 'Rama') return 'm-rama'; if(t === 'Troza') return 'm-troza'; return 'm-otro'; }
+function toast(msg,tp='in'){ const ic={ok:'fa-circle-check',er:'fa-circle-xmark',in:'fa-circle-info',wn:'fa-triangle-exclamation'}; const cl={ok:'var(--c-ok)',er:'var(--c-err)',in:'var(--c-blue3)',wn:'var(--c-warn)'}; const el=document.createElement('div'); el.className=`tst ${tp}`; el.innerHTML=`<i class="fa-solid ${ic[tp]||'fa-circle-info'}" style="color:${cl[tp]}"></i> ${msg}`; document.getElementById('tsts').appendChild(el); setTimeout(()=>el.remove(),3600); }
+
+async function loadData(){
+  try{
+    const res = await fetch(QUERY_URL);
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message || 'Error');
+    DB = (data.features || []).map(f => {
+      const a = f.attributes || {};
+      const g = f.geometry || {};
+      return {
+        id: a.objectid,
+        globalid: a.globalid,
+        bacadilla: safe(a.n_mero_de_bacadilla, ''),
+        cuadrante: safe(a.cuadrante, ''),
+        arbol: a.n_mero_de_rbol,
+        seccion: safe(a.secci_n, ''),
+        tipo: safe(a.tipo, ''),
+        especie: safe(a.especie, ''),
+        diam1: a.di_metro_1_en_cm,
+        diam2: a.di_metro_2_en_cm,
+        largo: a.largo_en_metros,
+        volumen: Number(a.volumen || 0),
+        fechaMs: a.CreationDate,
+        fecha: fmtDate(a.CreationDate),
+        creator: safe(a.Creator, '—'),
+        editor: safe(a.Editor, '—'),
+        editDate: fmtDate(a.EditDate),
+        x: g.x,
+        y: g.y
+      };
+    });
+    fillFilters();
+    applyFilters();
+    toast(DB.length + ' registros cargados','ok');
+  }catch(e){
+    console.error(e);
+    toast('Error al cargar datos desde ArcGIS','er');
+  }
+}
+
+function fillFilters(){
+  const setOpts = (id, values, label='Todos') => {
+    const el = document.getElementById(id);
+    const cur = el.value;
+    el.innerHTML = `<option value="">${label}</option>` + [...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'es')).map(v=>`<option value="${String(v).replace(/"/g,'&quot;')}">${v}</option>`).join('');
+    el.value = cur;
+  };
+  setOpts('f-b', DB.map(r=>r.bacadilla), 'Todas');
+  setOpts('f-c', DB.map(r=>r.cuadrante), 'Todos');
+  setOpts('f-t', DB.map(r=>r.tipo), 'Todos');
+  setOpts('f-e', DB.map(r=>r.especie), 'Todas');
+}
+
+function gf(){
+  return DB.filter(r => {
+    const s = flt.s.toLowerCase();
+    if (s) {
+      const blob = [r.id, r.bacadilla, r.cuadrante, r.arbol, r.seccion, r.tipo, r.especie].join(' ').toLowerCase();
+      if (!blob.includes(s)) return false;
+    }
+    if (flt.b && String(r.bacadilla) !== flt.b) return false;
+    if (flt.c && String(r.cuadrante) !== flt.c) return false;
+    if (flt.t && String(r.tipo) !== flt.t) return false;
+    if (flt.e && String(r.especie) !== flt.e) return false;
+    return true;
+  });
+}
+
+function af(){ flt.s=document.getElementById('f-s').value; flt.b=document.getElementById('f-b').value; flt.c=document.getElementById('f-c').value; flt.t=document.getElementById('f-t').value; flt.e=document.getElementById('f-e').value; applyFilters(); }
+function rf(){ flt={s:'',b:'',c:'',t:'',e:''}; ['f-s','f-b','f-c','f-t','f-e'].forEach(id=>document.getElementById(id).value=''); applyFilters(); }
+function rChips(){ const lbs=[]; if(flt.s) lbs.push(['Búsqueda: "'+flt.s+'"','s']); if(flt.b) lbs.push(['Bacadilla: '+flt.b,'b']); if(flt.c) lbs.push(['Cuadrante: '+flt.c,'c']); if(flt.t) lbs.push(['Tipo: '+flt.t,'t']); if(flt.e) lbs.push(['Especie: '+flt.e,'e']); document.getElementById('f-chips').innerHTML = lbs.map(([lb,k])=>`<button class="chip" onclick="clChip('${k}')">${lb} <span>✕</span></button>`).join(''); }
+function clChip(k){ flt[k]=''; const mp={s:'f-s',b:'f-b',c:'f-c',t:'f-t',e:'f-e'}; document.getElementById(mp[k]).value=''; applyFilters(); }
+
+function applyFilters(){
+  filtered = gf();
+  document.getElementById('sb-n').textContent = filtered.length;
+  rChips();
+  renderStats(filtered);
+  renderTable(filtered);
+  renderMap(filtered);
+  renderSelected();
+  renderShipmentSection();
+}
+
+function renderStats(f){
+  const total = f.length;
+  const volTotal = f.reduce((s,r)=>s+(Number(r.volumen)||0),0);
+  const especies = new Set(f.map(r=>r.especie).filter(Boolean)).size;
+  const cuadrantes = new Set(f.map(r=>r.cuadrante).filter(Boolean)).size;
+  document.getElementById('sg').innerHTML = `
+    <div class="sc" style="--sc-a:var(--c-blue3);--sc-ib:rgba(33,150,243,.15);--sc-ic:var(--c-blue3)"><div class="sc-hd"><div><div class="sc-v">${total}</div><div class="sc-l">Total de registros</div><div class="sc-s">Lectura directa desde ArcGIS</div></div><div class="sc-ic"><i class="fa-solid fa-database"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-gold);--sc-ib:rgba(232,168,32,.15);--sc-ic:var(--c-gold)"><div class="sc-hd"><div><div class="sc-v">${fmtNum(volTotal,2)}</div><div class="sc-l">Volumen total (m³)</div><div class="sc-s">Suma del campo volumen</div></div><div class="sc-ic"><i class="fa-solid fa-cubes-stacked"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-sky);--sc-ib:rgba(3,168,212,.15);--sc-ic:var(--c-sky)"><div class="sc-hd"><div><div class="sc-v">${especies}</div><div class="sc-l">Especies distintas</div><div class="sc-s">Diversidad observada</div></div><div class="sc-ic"><i class="fa-solid fa-leaf"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-ok);--sc-ib:rgba(30,184,122,.15);--sc-ic:var(--c-ok)"><div class="sc-hd"><div><div class="sc-v">${cuadrantes}</div><div class="sc-l">Cuadrantes activos</div><div class="sc-s">Cobertura espacial</div></div><div class="sc-ic"><i class="fa-solid fa-table-cells-large"></i></div></div></div>`;
+  renderCharts(f);
+}
+
+function dk(id){ if(chts[id]){chts[id].destroy(); delete chts[id];}}
+function topN(obj, n=8){ return Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n); }
+function renderCharts(f){
+  const CD = { g:'rgba(26,56,88,.9)', tk:'rgba(100,153,190,.9)' };
+  const especieCount = {}; f.forEach(r => especieCount[r.especie] = (especieCount[r.especie]||0)+1);
+  const especieTop = topN(especieCount, 8);
+  dk('c1'); document.getElementById('cb1').textContent = f.length + ' registros';
+  chts.c1 = new Chart(document.getElementById('ch1').getContext('2d'), { type:'bar', data:{ labels: especieTop.map(d=>d[0]||'—'), datasets:[{ data: especieTop.map(d=>d[1]), backgroundColor:'rgba(33,150,243,.7)', borderRadius:6, borderSkipped:false }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}}}, y:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}},beginAtZero:true} } } });
+  const tipoCount = {}; f.forEach(r => tipoCount[r.tipo] = (tipoCount[r.tipo]||0)+1);
+  dk('c2'); document.getElementById('cb2').textContent = Object.keys(tipoCount).length + ' clases';
+  chts.c2 = new Chart(document.getElementById('ch2').getContext('2d'), { type:'doughnut', data:{ labels:Object.keys(tipoCount), datasets:[{ data:Object.values(tipoCount), backgroundColor:['#03a8d4','#e8a820','#7c5cbf','#1eb87a','#e8424e'], borderWidth:2, borderColor:'#122538' }] }, options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{position:'bottom',labels:{color:CD.tk,padding:11,font:{family:'DM Sans',size:11},boxWidth:9,boxHeight:9}} } } });
+  const cuadranteCount = {}; f.forEach(r => cuadranteCount[r.cuadrante] = (cuadranteCount[r.cuadrante]||0)+1);
+  const cuadranteKeys = Object.keys(cuadranteCount).sort();
+  dk('c3'); chts.c3 = new Chart(document.getElementById('ch3').getContext('2d'), { type:'bar', data:{ labels: cuadranteKeys.length ? cuadranteKeys : ['—'], datasets:[{ data: cuadranteKeys.length ? cuadranteKeys.map(k=>cuadranteCount[k]) : [0], backgroundColor:'rgba(232,168,32,.65)', borderColor:'#e8a820', borderWidth:2, borderRadius:6 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}}}, y:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}},beginAtZero:true} } } });
+  const especieVol = {}; f.forEach(r => especieVol[r.especie] = (especieVol[r.especie]||0) + (Number(r.volumen)||0));
+  const especieVolTop = topN(especieVol, 8);
+  dk('c4'); document.getElementById('cb4').textContent = fmtNum(f.reduce((s,r)=>s+(Number(r.volumen)||0),0),2);
+  chts.c4 = new Chart(document.getElementById('ch4').getContext('2d'), { type:'bar', data:{ labels: especieVolTop.map(d=>d[0]||'—'), datasets:[{ data: especieVolTop.map(d=>Number(d[1].toFixed(2))), backgroundColor:'rgba(30,184,122,.65)', borderColor:'#1eb87a', borderWidth:2, borderRadius:6 }] }, options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}},beginAtZero:true}, y:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans',size:11}}} } } });
+}
+
+function renderTable(f){
+  document.getElementById('th-c').textContent = '(' + f.length + ' registro' + (f.length !== 1 ? 's' : '') + ')';
+  document.getElementById('tbody').innerHTML = f.map(r => `
+    <tr>
+      <td class="chk"><input type="checkbox" ${selected.has(r.id) ? 'checked' : ''} onchange="toggleShipment(${r.id})"></td>
+      <td class="tm">#${r.id}</td>
+      <td>${safe(r.bacadilla)}</td>
+      <td><span class="tb2">${safe(r.cuadrante)}</span></td>
+      <td>${safe(r.arbol)}</td>
+      <td>${safe(r.seccion)}</td>
+      <td><span class="bm ${tipoCls(r.tipo)}">${safe(r.tipo)}</span></td>
+      <td>${safe(r.especie)}</td>
+      <td>${fmtNum(r.diam1,0)}</td>
+      <td>${fmtNum(r.diam2,0)}</td>
+      <td>${fmtNum(r.largo,1)}</td>
+      <td>${fmtNum(r.volumen,2)}</td>
+      <td class="tm">${r.fecha}</td>
+      <td><button class="ba v" onclick="viewRecord(${r.id})" title="Ver detalle"><i class="fa-solid fa-eye"></i></button></td>
+    </tr>`).join('');
+  document.getElementById('selectPage').checked = f.length > 0 && f.every(r => selected.has(r.id));
+}
+
+function toggleShipment(id){
+  const r = DB.find(x => x.id === id);
+  if(!r) return;
+  if(selected.has(id)) selected.delete(id); else selected.set(id, r);
+  renderTable(filtered); renderSelected(); renderShipmentSection(); renderMap(filtered); updateBoletaButtons();
+}
+
+function renderSelected(){
+  const vals = [...selected.values()];
+  document.getElementById('selectedList').innerHTML = vals.length ? vals.map(r => `
+    <div class="sel-item">
+      <div><strong>${safe(r.especie,'Sin especie')}</strong><small>Cuadrante ${safe(r.cuadrante)} · Troza ${safe(r.arbol)} · ${safe(r.tipo)} · ${fmtNum(r.volumen,2)} m³</small></div>
+      <button class="rm" onclick="toggleShipment(${r.id})">Quitar</button>
+    </div>`).join('') : '<div style="color:var(--tx2)">Aún no has seleccionado registros.</div>';
+  document.getElementById('sb-sel').textContent = vals.length;
+}
+
+function renderShipmentSection(){
+  const vals = [...selected.values()].sort((a,b)=>String(a.cuadrante).localeCompare(String(b.cuadrante),'es') || String(a.arbol).localeCompare(String(b.arbol),'es',{numeric:true}));
+  const totalVol = vals.reduce((s,r)=>s+(Number(r.volumen)||0),0);
+  const species = new Set(vals.map(v=>v.especie).filter(Boolean)).size;
+  document.getElementById('shipmentStats').innerHTML = `
+    <div class="sc" style="--sc-a:var(--c-blue3);--sc-ib:rgba(33,150,243,.15);--sc-ic:var(--c-blue3)"><div class="sc-hd"><div><div class="sc-v">${vals.length}</div><div class="sc-l">Seleccionados</div><div class="sc-s">Registros listos para envío</div></div><div class="sc-ic"><i class="fa-solid fa-check-double"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-ok);--sc-ib:rgba(30,184,122,.15);--sc-ic:var(--c-ok)"><div class="sc-hd"><div><div class="sc-v">${fmtNum(totalVol,2)}</div><div class="sc-l">Volumen del envío</div><div class="sc-s">m³ acumulados</div></div><div class="sc-ic"><i class="fa-solid fa-cubes"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-gold);--sc-ib:rgba(232,168,32,.15);--sc-ic:var(--c-gold)"><div class="sc-hd"><div><div class="sc-v">${species}</div><div class="sc-l">Especies</div><div class="sc-s">Diversidad en el envío</div></div><div class="sc-ic"><i class="fa-solid fa-leaf"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-sky);--sc-ib:rgba(3,168,212,.15);--sc-ic:var(--c-sky)"><div class="sc-hd"><div><div class="sc-v">${new Set(vals.map(v=>v.cuadrante).filter(Boolean)).size}</div><div class="sc-l">Cuadrantes</div><div class="sc-s">Cobertura del envío</div></div><div class="sc-ic"><i class="fa-solid fa-table-cells"></i></div></div></div>`;
+  document.getElementById('shipmentTable').innerHTML = vals.length ? vals.map(r => `
+    <tr>
+      <td class="tm">#${r.id}</td>
+      <td>${safe(r.cuadrante)}</td>
+      <td>${safe(r.arbol)}</td>
+      <td>${safe(r.seccion)}</td>
+      <td><span class="bm ${tipoCls(r.tipo)}">${safe(r.tipo)}</span></td>
+      <td>${safe(r.especie)}</td>
+      <td>${fmtNum(r.volumen,2)}</td>
+      <td><button class="rm" onclick="toggleShipment(${r.id})">Quitar</button></td>
+    </tr>`).join('') : '<tr><td colspan="8" style="color:#8fb0cf">No has seleccionado registros todavía.</td></tr>';
+}
+
+function updateBoletaButtons(){
+  const enabled = selected.size > 0;
+  document.getElementById('envioPreviewBtn').disabled = !enabled;
+  document.getElementById('topPreviewBtn').disabled = !enabled;
+}
+
+function initMap(){
+  if(lmap) return;
+  lmap = L.map('map',{zoomControl:true}).setView([16.9,-89.9],8);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{ attribution:'© OpenStreetMap, © CARTO', maxZoom:19 }).addTo(lmap);
+}
+function typeColor(tipo){ if(tipo==='Rama') return '#03a8d4'; if(tipo==='Troza') return '#e8a820'; return '#7c5cbf'; }
+function renderMap(f){
+  if(!lmap) initMap();
+  lmk.forEach(m=>m.remove()); lmk=[];
+  document.getElementById('mc').textContent = f.length;
+  const lel = document.getElementById('ml'); lel.innerHTML='';
+  f.forEach(r => {
+    const c = selected.has(r.id) ? '#10b981' : typeColor(r.tipo);
+    if(Number.isFinite(r.y) && Number.isFinite(r.x)){
+      const ico=L.divIcon({ html:`<div style="width:12px;height:12px;border-radius:50%;background:${c};border:2px solid white;box-shadow:0 0 8px ${c}99"></div>`, iconSize:[12,12],iconAnchor:[6,6],className:'' });
+      const mk=L.marker([r.y,r.x],{icon:ico}).addTo(lmap).bindPopup(`<div class="pp-in"><div class="pp-r"><span>ID</span><b>#${r.id}</b></div><div class="pp-r"><span>Especie</span><b>${safe(r.especie)}</b></div><div class="pp-r"><span>Cuadrante</span><b>${safe(r.cuadrante)}</b></div><div class="pp-r"><span>Árbol</span><b>${safe(r.arbol)}</b></div><div class="pp-r"><span>Volumen</span><b>${fmtNum(r.volumen,2)} m³</b></div></div>`,{className:'xp'});
+      lmk.push(mk);
+    }
+    const it=document.createElement('div'); it.className='mi' + (selected.has(r.id) ? ' hi' : ''); it.innerHTML=`<div class="mi-dot" style="background:${c}"></div><div><div class="mi-n">${safe(r.especie)} — Árbol ${safe(r.arbol)}</div><div class="mi-m">${safe(r.tipo)} · Bacadilla ${safe(r.bacadilla)} · Cuadrante ${safe(r.cuadrante)}</div></div>`; it.onclick=()=>{ if(Number.isFinite(r.y) && Number.isFinite(r.x)) lmap.setView([r.y,r.x],16); toggleShipment(r.id); }; lel.appendChild(it);
+  });
+  if(lmk.length>0){ const group=L.featureGroup(lmk); const bounds=group.getBounds().pad(0.15); if(document.getElementById('vp-map').classList.contains('on')) lmap.fitBounds(bounds,{maxZoom:16}); else lmap._pendingBounds=bounds; }
+}
+
+function viewRecord(id){
+  const r = DB.find(x=>x.id===id); if(!r) return;
+  document.getElementById('dbd').innerHTML = `
+    <div class="dg">
+      <div class="di"><div class="dk">ID</div><div class="dv tm">#${r.id}</div></div>
+      <div class="di"><div class="dk">GlobalID</div><div class="dv tm">${safe(r.globalid)}</div></div>
+      <div class="di"><div class="dk">Número de bacadilla</div><div class="dv">${safe(r.bacadilla)}</div></div>
+      <div class="di"><div class="dk">Cuadrante</div><div class="dv">${safe(r.cuadrante)}</div></div>
+      <div class="di"><div class="dk">Número de árbol</div><div class="dv">${safe(r.arbol)}</div></div>
+      <div class="di"><div class="dk">Sección</div><div class="dv">${safe(r.seccion)}</div></div>
+      <div class="di"><div class="dk">Tipo</div><div class="dv"><span class="bm ${tipoCls(r.tipo)}">${safe(r.tipo)}</span></div></div>
+      <div class="di"><div class="dk">Especie</div><div class="dv">${safe(r.especie)}</div></div>
+      <div class="di"><div class="dk">Diámetro 1</div><div class="dv">${fmtNum(r.diam1,0)} cm</div></div>
+      <div class="di"><div class="dk">Diámetro 2</div><div class="dv">${fmtNum(r.diam2,0)} cm</div></div>
+      <div class="di"><div class="dk">Largo</div><div class="dv">${fmtNum(r.largo,1)} m</div></div>
+      <div class="di"><div class="dk">Volumen</div><div class="dv">${fmtNum(r.volumen,2)} m³</div></div>
+      <div class="di"><div class="dk">Fecha</div><div class="dv tm">${r.fecha}</div></div>
+      <div class="di"><div class="dk">Coordenadas</div><div class="dv tm">${Number.isFinite(r.y)&&Number.isFinite(r.x) ? r.y.toFixed(6)+', '+r.x.toFixed(6) : 'Sin coordenadas'}</div></div>
+    </div>`;
+  document.getElementById('mo-d').classList.add('on');
+}
+
+function clearShipmentForm(){ ['guiaNo','envioNo','licenciaForest','destino','conductor','licenciaConductor','vehiculo','placas','marca','color','despachadoPor','conductorResp','encargadoAserradero'].forEach(id => document.getElementById(id).value = ''); document.getElementById('fecha').value = new Date().toISOString().slice(0,10); }
+
+function buildSummary(rows){
+  const grouped = new Map();
+  rows.forEach(r => {
+    const key = `${r.tipo}||${r.especie}`;
+    if(!grouped.has(key)) grouped.set(key, {cantidad:0, tipo:r.tipo, especie:r.especie, volumen:0});
+    const g = grouped.get(key); g.cantidad += 1; g.volumen += Number(r.volumen || 0);
+  });
+  return [...grouped.values()].sort((a,b)=>String(a.especie).localeCompare(String(b.especie),'es'));
+}
+
+function openPreview(){
+  if(selected.size === 0){ toast('Selecciona al menos un registro para el envío','wn'); return; }
+  const rows = [...selected.values()].sort((a,b)=>String(a.cuadrante).localeCompare(String(b.cuadrante),'es') || String(a.arbol).localeCompare(String(b.arbol),'es',{numeric:true}));
+  const summary = buildSummary(rows);
+  document.getElementById('outGuia').textContent = document.getElementById('guiaNo').value || '—';
+  document.getElementById('outEnvio').textContent = document.getElementById('envioNo').value || '—';
+  document.getElementById('outFecha').textContent = document.getElementById('fecha').value || '—';
+  document.getElementById('outLicForest').textContent = document.getElementById('licenciaForest').value || '—';
+  document.getElementById('outDestino').textContent = document.getElementById('destino').value || '—';
+  document.getElementById('outConductor').textContent = document.getElementById('conductor').value || '—';
+  document.getElementById('outLicCond').textContent = document.getElementById('licenciaConductor').value || '—';
+  document.getElementById('outVehiculo').textContent = document.getElementById('vehiculo').value || '—';
+  document.getElementById('outPlacas').textContent = document.getElementById('placas').value || '—';
+  document.getElementById('outMarca').textContent = document.getElementById('marca').value || '—';
+  document.getElementById('outColor').textContent = document.getElementById('color').value || '—';
+  document.getElementById('outDespachado').textContent = document.getElementById('despachadoPor').value || ' ';
+  document.getElementById('outConductorResp').textContent = document.getElementById('conductorResp').value || ' ';
+  document.getElementById('outEncargado').textContent = document.getElementById('encargadoAserradero').value || ' ';
+  document.getElementById('shipmentRows').innerHTML = rows.map(r => `
+    <tr>
+      <td>${safe(r.cuadrante,'')}</td>
+      <td>${safe(r.arbol,'')}</td>
+      <td>${safe(r.seccion,'')}</td>
+      <td>${safe(r.tipo,'')}</td>
+      <td>${safe(r.especie,'')}</td>
+      <td>${fmtNum(r.volumen,2)}</td>
+    </tr>`).join('');
+  document.getElementById('shipmentTotal').textContent = fmtNum(rows.reduce((a,b)=>a+(Number(b.volumen)||0),0));
+  document.getElementById('summaryRows').innerHTML = summary.map(s => `
+    <tr>
+      <td>${s.cantidad}</td>
+      <td>${safe(s.tipo,'')}</td>
+      <td>${safe(s.especie,'')}</td>
+      <td>${fmtNum(s.volumen,2)}</td>
+    </tr>`).join('');
+  document.getElementById('previewModal').classList.add('show');
+}
+function closePreview(){ document.getElementById('previewModal').classList.remove('show'); }
+function printPreview(){
+  const html = document.getElementById('printArea').outerHTML;
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Boleta de envío</title><style>
+    body{font-family:Inter,Arial,sans-serif;margin:18px;color:#111827}.doc{border:2px solid #111827;padding:16px}.doc-header{display:grid;grid-template-columns:1fr 160px;gap:12px;align-items:start}.doc-title{text-align:center}.doc-title h2{margin:0;font-size:20px;line-height:1.25;font-weight:800;text-transform:uppercase}.logo-box{border:1.5px solid #111827;min-height:98px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#6b7280;text-align:center;padding:10px}.box-grid{display:grid;grid-template-columns:170px 1fr 120px 1fr 90px 1fr;gap:0;margin-top:14px;border-top:1px solid #111827;border-left:1px solid #111827}.cell{border-right:1px solid #111827;border-bottom:1px solid #111827;padding:8px 10px;min-height:40px;font-size:14px}.cell.label{background:#f8fafc;font-weight:700}.cell.value{font-weight:600}.section-title{text-align:center;font-size:18px;font-weight:800;margin-top:12px;padding:6px 0;border-left:1px solid #111827;border-right:1px solid #111827;border-top:1px solid #111827}.doc-table{width:100%;border-collapse:collapse;border:1px solid #111827}.doc-table th,.doc-table td{border:1px solid #111827;padding:7px 8px;font-size:13px}.doc-table th{background:#f8fafc;text-transform:uppercase}.tot-row td{font-weight:800;background:#f8fafc}.summary-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;border-left:1px solid #111827;border-right:1px solid #111827;border-bottom:1px solid #111827}.summary-left,.summary-right{min-height:180px}.summary-right{border-left:1px solid #111827}.summary-head{text-align:center;font-weight:800;font-size:16px;padding:6px 0;border-bottom:1px solid #111827;background:#f8fafc}.summary-table{width:100%;border-collapse:collapse}.summary-table th,.summary-table td{border-bottom:1px solid #111827;border-right:1px solid #111827;padding:7px 8px;font-size:13px}.summary-table th:last-child,.summary-table td:last-child{border-right:0}.sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-left:1px solid #111827;border-right:1px solid #111827;border-bottom:1px solid #111827}.sign-col{padding:12px;border-right:1px solid #111827}.sign-col:last-child{border-right:0}.sign-row{display:grid;grid-template-columns:170px 1fr;gap:10px;align-items:center;margin-bottom:16px}.sign-line{border-bottom:1px solid #111827;height:26px}.foot{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 4px 0;font-weight:800}.foot small{font-weight:700}</style></head><body>${html}</body></html>`);
+  w.document.close(); w.focus(); setTimeout(()=>w.print(),250);
+}
+
+function expCSV(){
+  const f = filtered;
+  const h = ['ID','GlobalID','Bacadilla','Cuadrante','Arbol','Seccion','Tipo','Especie','Diametro1_cm','Diametro2_cm','Largo_m','Volumen_m3','CreationDate','Creator','EditDate','Editor','Latitud','Longitud'];
+  const rows = f.map(r => [r.id,r.globalid,r.bacadilla,r.cuadrante,r.arbol,r.seccion,r.tipo,r.especie,r.diam1,r.diam2,r.largo,r.volumen,r.fecha,r.creator,r.editDate,r.editor,r.y,r.x]);
+  const csv = [h,...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'})); a.download='inventario_survey_envio.csv'; a.click();
+  toast(f.length + ' registros exportados','ok');
+}
+function reload(){ loadData(); }
+function cm(id){ document.getElementById(id).classList.remove('on'); }
+document.addEventListener('click',e=>{ if(e.target===document.getElementById('mo-d')) cm('mo-d'); if(e.target===document.getElementById('previewModal')) closePreview(); });
+let sbC=false; function togSB(){ if(window.innerWidth<=768){document.getElementById('sb').classList.toggle('mob'); return;} sbC=!sbC; document.getElementById('sb').classList.toggle('col',sbC); document.getElementById('mn').classList.toggle('ex',sbC); if(document.getElementById('vp-map').classList.contains('on')&&lmap) setTimeout(()=>lmap.invalidateSize(),250); }
+const VM={ stats:['Panel General','Resumen estadístico del inventario forestal'], table:['Inventario','Selecciona registros para enviar'], map:['Mapa','Distribución geoespacial de registros'], envio:['Formulario de envío','Completa la boleta con los registros seleccionados'] };
+function sv(v){ document.querySelectorAll('.vp').forEach(e=>e.classList.remove('on')); document.querySelectorAll('.vtab').forEach(e=>e.classList.remove('on')); document.querySelectorAll('.sn-btn').forEach(e=>e.classList.remove('on')); document.getElementById('vp-'+v).classList.add('on'); document.getElementById('tab-'+v).classList.add('on'); const nb={stats:0,table:1,map:2,envio:3}; document.querySelectorAll('.sn-btn')[nb[v]]?.classList.add('on'); const [t,s]=VM[v]; document.getElementById('pg-t').textContent=t; document.getElementById('pg-s').textContent=s; if(v==='map'){ if(!lmap) initMap(); setTimeout(()=>{ lmap.invalidateSize(); if(lmap._pendingBounds){ lmap.fitBounds(lmap._pendingBounds,{maxZoom:16}); lmap._pendingBounds=null; } else renderMap(filtered); },120);} }
+
+document.getElementById('selectPage').addEventListener('change', (e)=>{ if(e.target.checked) filtered.forEach(r=>selected.set(r.id,r)); else filtered.forEach(r=>selected.delete(r.id)); renderTable(filtered); renderSelected(); renderShipmentSection(); renderMap(filtered); updateBoletaButtons(); });
+document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
+loadData();
+</script>
+</body>
+</html>
