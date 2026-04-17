@@ -52,7 +52,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
 .vtabs{display:flex;gap:3px;background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);padding:4px;width:fit-content;margin-bottom:16px}.vtab{padding:6px 15px;border-radius:var(--rs);border:none;background:transparent;color:var(--tx2);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif}.vtab.on{background:var(--c-blue);color:#fff}.vp{display:none}.vp.on{display:block}
 .fbar{background:var(--s-1);border:1px solid var(--bd);border-radius:var(--r);padding:14px 17px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
 .fg{display:flex;flex-direction:column;gap:4px}.fg label{font-size:9.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px}
-.fi,.fs{background:var(--s-2);border:1px solid var(--bd);color:var(--tx);border-radius:var(--rs);padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;height:34px;outline:none}.fi.w{min-width:240px}.fs{min-width:120px}
+.fi,.fs{background:var(--s-2);border:1px solid var(--bd);color:var(--tx);border-radius:var(--rs);padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;height:34px;outline:none}.fi.w{min-width:240px}.fs{min-width:120px}.fs-multi{min-width:220px;height:88px;padding:8px}.fs-multi option{padding:4px 6px}.hint-mini{font-size:10px;color:var(--tx3);margin-top:3px}
 .f-clr{background:transparent;border:1px solid var(--bd);color:var(--tx2);height:34px;padding:0 12px;border-radius:var(--rs);cursor:pointer;font-size:11.5px;display:flex;align-items:center;gap:5px;margin-left:auto}
 .f-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}.chip{background:rgba(19,85,168,.2);border:1px solid rgba(33,150,243,.3);color:var(--c-blue3);font-size:10.5px;font-weight:500;padding:2px 9px;border-radius:11px;display:flex;align-items:center;gap:4px;cursor:pointer}
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
@@ -79,6 +79,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
 .login-help{margin-top:14px;padding:10px 12px;border:1px dashed var(--bd2);border-radius:12px;font-size:11px;color:var(--tx2);line-height:1.5}
 .login-error{display:none;background:rgba(232,66,78,.12);border:1px solid rgba(232,66,78,.32);color:#ffb4be;padding:10px 12px;border-radius:12px;font-size:12px}
 .login-error.show{display:block}.hidden-app{display:none}.user-badge{display:flex;align-items:center;gap:8px;background:var(--s-3);border:1px solid var(--bd);border-radius:999px;padding:6px 10px;color:var(--tx);font-size:11px;font-weight:600}.user-badge i{color:var(--c-sky)}
+.print-opt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--bd);border-radius:12px;background:var(--s-2)}
+.print-opt input{margin-top:3px;transform:scale(1.05)}
+.print-opt .ttl{font-size:12px;font-weight:700;color:var(--tx)}
+.print-opt .sub{font-size:11px;color:var(--tx2);margin-top:2px}
+
+
+.admin-filter-card{margin:14px 12px 0;padding:12px;background:linear-gradient(180deg,rgba(18,37,56,.96),rgba(11,26,40,.96));border:1px solid var(--bd);border-radius:14px;box-shadow:var(--shs)}
+.admin-filter-card .af-title{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--tx3);margin-bottom:8px}
+.admin-filter-card .af-sub{font-size:10px;color:var(--tx2);margin-top:8px;line-height:1.4}
+.admin-filter-select{width:100%;min-height:88px;background:var(--s-2);border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:8px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none}
+.admin-filter-select option{padding:6px 8px;border-radius:6px}
+.admin-filter-select option:checked{background:linear-gradient(135deg,var(--c-blue),var(--c-blue2));color:#fff}
+#sb.col .admin-filter-card{display:none!important}
+
+
+.admin-brand-grid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
+.admin-brand-chip{border:1px solid #d1d5db;border-radius:12px;padding:8px 10px;display:flex;align-items:center;gap:8px;background:#fff}
+.admin-brand-chip img{width:40px;height:40px;object-fit:contain;border-radius:8px}
+.admin-brand-chip span{font-size:11px;font-weight:700;line-height:1.2;color:#111827;max-width:110px}
+.report-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:10px;border-top:1px solid #111827;border-left:1px solid #111827}
+.report-meta .cell{min-height:38px}
+.report-note{margin-top:10px;padding:10px 12px;border:1px solid #111827;background:#f8fafc;font-size:12px;line-height:1.5}
+@media (max-width:900px){.report-meta{grid-template-columns:150px 1fr}.admin-brand-grid{justify-content:flex-start}}
 
 </style>
 </head>
@@ -133,6 +156,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
     <button class="sn-btn" onclick="sv('envio')"><div class="sn-ic"><i class="fa-solid fa-truck-fast"></i></div><span class="sn-lbl">Formulario de envío</span><span class="sn-bdg" id="sb-sel">0</span></button>
     <div class="sn-sec">Herramientas</div>
     <button class="sn-btn" onclick="expCSV()"><div class="sn-ic"><i class="fa-solid fa-file-csv"></i></div><span class="sn-lbl">Exportar CSV</span></button>
+    <div id="adminConWrap" class="admin-filter-card" style="display:none">
+      <div class="af-title">Concesión (comparar)</div>
+      <select id="f-con" class="admin-filter-select" multiple onchange="af()"></select>
+      <div class="af-sub">Ctrl o Cmd + clic para seleccionar varias</div>
+    </div>
   </div>
   <div class="sb-ft">
     <div class="sb-av">NC</div>
@@ -182,6 +210,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
         <div class="cc"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-circle-half-stroke" style="color:var(--c-sky)"></i>Distribución por tipo</span><span class="cc-b" id="cb2">—</span></div><div class="cc-wrap"><canvas id="ch2"></canvas></div></div>
         <div class="cc"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-border-all" style="color:var(--c-gold)"></i>Frecuencia por cuadrante</span><span class="cc-b">Frecuencia</span></div><div class="cc-wrap"><canvas id="ch3"></canvas></div></div>
         <div class="cc"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-ruler-combined" style="color:var(--c-ok)"></i>Volumen acumulado por especie</span><span class="cc-b" id="cb4">m³</span></div><div class="cc-wrap"><canvas id="ch4"></canvas></div></div>
+        <div class="cc" id="cc5" style="display:none"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-scale-balanced" style="color:var(--c-violet)"></i>Comparativo por concesión</span><span class="cc-b" id="cb5">—</span></div><div class="cc-wrap"><canvas id="ch5"></canvas></div></div>
       </div>
     </div>
 
@@ -196,6 +225,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
                 <tr>
                   <th class="chk"><input type="checkbox" id="selectPage"></th>
                   <th>ID</th>
+                  <th>Concesión</th>
                   <th>Bacadilla</th>
                   <th>Cuadrante</th>
                   <th>Árbol</th>
@@ -250,6 +280,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
                     <th>Tipo</th>
                     <th>Especie</th>
                     <th>Vol. m³</th>
+                    <th id="shipmentDoyleHead">Pies Doyle</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -276,6 +307,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
             <div><label>Despachado por</label><input id="despachadoPor" placeholder="Nombre"></div>
             <div><label>Conductor responsable</label><input id="conductorResp" placeholder="Nombre"></div>
             <div><label>Encargado Aserradero</label><input id="encargadoAserradero" placeholder="Nombre"></div>
+            <div class="span-3">
+              <label>Opciones de impresión</label>
+              <div class="print-opt">
+                <input id="includeDoyleInBoleta" type="checkbox">
+                <div>
+                  <div class="ttl">Incluir pies Doyle en la boleta</div>
+                  <div class="sub">Si no activas esta opción, el total de pies Doyle solo se mostrará en el panel del envío y no se imprimirá.</div>
+                </div>
+              </div>
+            </div>
             <div class="span-3" style="display:flex;justify-content:flex-end;gap:10px;margin-top:4px">
               <button class="msec" onclick="clearShipmentForm()">Limpiar formulario</button>
               <button class="mpri" onclick="openPreview()" id="envioPreviewBtn" disabled><i class="fa-solid fa-file-lines"></i> Generar boleta</button>
@@ -308,92 +349,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
       </div>
     </div>
     <div class="sheet">
-      <div class="doc" id="printArea">
-        <div class="doc-header">
-          <div class="logo-side">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPwrmbeOCx8R45rEYWyUgpGxCur87BLDWxNATI-A9lDytrJgDof-5nKg3LtOBkdm2EV3f-cj1304dspDGAnaJlffoKmoB5a6GiPqyrctDRNx1UPAtsq9sOw1B1N8KZ1sFQ41qAfhOsKjFRyChVOw5A10peDiNIFg3Sz3pXNmGDGDMxq4Wj8xdJa9Iylpw/s1815/Paculogo_ambiental.jpg" alt="PACUNAM" onerror="this.style.display='none'">
-          </div>
-          <div class="doc-title">
-            <h2>ENVÍO INTERNO DE MADERA</h2>
-            <h2>CERTIFICADA EN ROLLO</h2>
-            <h2>UNIDAD DE MANEJO UAXACTÚN, FLORES, PETÉN</h2>
-            <div class="doc-subtitle">Formato electrónico de nota de envío con apoyo de PACUNAM</div>
-          </div>
-          <div class="logo-side">
-            <img src="https://visituaxactun.com/omyc/wp-content/uploads/2020/07/Logo-OMYC-Footer.png" alt="OMYC">
-          </div>
-        </div>
-        <div class="box-grid">
-          <div class="cell label">Guía No.</div><div class="cell value" id="outGuia"></div>
-          <div class="cell label">Envío No.</div><div class="cell value" id="outEnvio"></div>
-          <div class="cell label">Fecha</div><div class="cell value" id="outFecha"></div>
-          <div class="cell label">Licencia forestal</div><div class="cell value" id="outLicForest"></div>
-          <div class="cell label">Destino</div><div class="cell value" id="outDestino"></div>
-          <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
-          <div class="cell label">Conductor</div><div class="cell value" id="outConductor"></div>
-          <div class="cell label">Licencia No.</div><div class="cell value" id="outLicCond"></div>
-          <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
-          <div class="cell label">Vehículo</div><div class="cell value" id="outVehiculo"></div>
-          <div class="cell label">No. placas</div><div class="cell value" id="outPlacas"></div>
-          <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
-          <div class="cell label">Marca</div><div class="cell value" id="outMarca"></div>
-          <div class="cell label">Color</div><div class="cell value" id="outColor"></div>
-          <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
-        </div>
-        <div class="section-title">CADENA DE CUSTODIA</div>
-        <table class="doc-table">
-          <thead>
-            <tr>
-              <th>Cuadrante</th>
-              <th>No. troza</th>
-              <th>Sección</th>
-              <th>Tipo*</th>
-              <th>Especie</th>
-              <th>Vol. m³</th>
-            </tr>
-          </thead>
-          <tbody id="shipmentRows"></tbody>
-          <tfoot>
-            <tr class="tot-row">
-              <td colspan="5" style="text-align:center">TOTAL</td>
-              <td id="shipmentTotal">0.00</td>
-            </tr>
-          </tfoot>
-        </table>
-        <div class="summary-wrap">
-          <div class="summary-left"></div>
-          <div class="summary-right">
-            <div class="summary-head">RESUMEN</div>
-            <table class="summary-table">
-              <thead>
-                <tr>
-                  <th>Cantidad</th>
-                  <th>Tipo</th>
-                  <th>Especie</th>
-                  <th>Volumen</th>
-                </tr>
-              </thead>
-              <tbody id="summaryRows"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="sign-grid">
-          <div class="sign-col">
-            <div class="sign-row"><div><b>Despachado por:</b></div><div class="sign-line" id="outDespachado"></div></div>
-            <div class="sign-row"><div><b>Conductor responsable:</b></div><div class="sign-line" id="outConductorResp"></div></div>
-            <div class="sign-row"><div><b>Encargado Aserradero:</b></div><div class="sign-line" id="outEncargado"></div></div>
-          </div>
-          <div class="sign-col">
-            <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
-            <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
-            <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
-          </div>
-        </div>
-        <div class="foot">
-          <div><small>*T = troza &nbsp;&nbsp; *R = rama &nbsp;&nbsp; *RE = ramas escuadras</small></div>
-          <div>PBN-FM/COC-000161 &nbsp;&nbsp;&nbsp; FSC 100%</div>
-        </div>
-      </div>
+      <div class="doc" id="printArea"></div>
+</div>
     </div>
   </div>
 </div>
@@ -408,10 +365,12 @@ const SERVICE_URL = 'https://services3.arcgis.com/9GZJC0D1FF3Zfm0K/ArcGIS/rest/s
 const QUERY_URL = SERVICE_URL + '/query?where=1=1&outFields=*&returnGeometry=true&f=json';
 const CONCESION_FIELD_CANDIDATES = ['concesi_n','concesion','concesión','Concesion','Concesión','unidad_manejo','unidad_de_manejo','umf','concession'];
 const CONCESION_FIELD_FIXED = 'concesi_n';
+const PIE_DOYLE_FIELD_CANDIDATES = ['pies_doyle','pie_doyle','piesdoyle','pies_doyles','pies_doyle_total','p_doyle'];
+let piesDoyleFieldDetected = null;
 let currentUser = null;
 let concesionFieldDetected = CONCESION_FIELD_FIXED;
 let DB = [];
-let flt = { s:'', b:'', c:'', t:'', e:'' };
+let flt = { s:'', b:'', c:'', t:'', e:'', con:[] };
 let filtered = [];
 let selected = new Map();
 let lmap = null;
@@ -419,6 +378,8 @@ let lmk = [];
 let chts = {};
 
 function safe(v, fb='—'){ return v === null || v === undefined || v === '' ? fb : v; }
+function isAdmin(){ return currentUser?.role === 'Administrador'; }
+function getSelectedValues(id){ const el=document.getElementById(id); return el ? [...el.selectedOptions].map(o=>o.value).filter(Boolean) : []; }
 function fmtNum(v, d=2){ const n = Number(v); return Number.isFinite(n) ? n.toFixed(d) : '—'; }
 function fmtDate(ms){ if(!ms) return '—'; const d = new Date(ms); return isNaN(d) ? '—' : d.toLocaleString('es-GT'); }
 function tipoCls(t){ if(t === 'Rama') return 'm-rama'; if(t === 'Troza') return 'm-troza'; return 'm-otro'; }
@@ -430,6 +391,7 @@ async function loadData(){
     const data = await res.json();
     if(data.error) throw new Error(data.error.message || 'Error');
     concesionFieldDetected = detectConcesionField(data.features || []);
+    piesDoyleFieldDetected = detectPiesDoyleField(data.features || []);
     if(!concesionFieldDetected){
       throw new Error('No se encontró el campo de concesión en la capa.');
     }
@@ -441,6 +403,7 @@ async function loadData(){
       ? `${DB.length} registros cargados para ${scope}`
       : `Se cargaron ${DB.length} registros, pero no se detectó campo de concesión para filtrar automáticamente`;
     toast(msg, concesionFieldDetected ? 'ok' : 'wn');
+    if(!piesDoyleFieldDetected) toast('No se detectó un campo de pies Doyle en la capa. Se mostrará 0.00 hasta configurarlo.', 'wn');
   }catch(e){
     console.error(e);
     toast('Error al cargar datos desde ArcGIS','er');
@@ -452,6 +415,12 @@ function detectConcesionField(features){
   const keys = Object.keys(attrs);
   if (keys.includes(CONCESION_FIELD_FIXED)) return CONCESION_FIELD_FIXED;
   return CONCESION_FIELD_CANDIDATES.find(k => keys.includes(k)) || null;
+}
+
+function detectPiesDoyleField(features){
+  const attrs = features?.[0]?.attributes || {};
+  const keys = Object.keys(attrs);
+  return PIE_DOYLE_FIELD_CANDIDATES.find(k => keys.includes(k)) || null;
 }
 
 function normalizeConcesion(v){
@@ -477,6 +446,7 @@ function mapFeature(f){
     diam2: a.di_metro_2_en_cm,
     largo: a.largo_en_metros,
     volumen: Number(a.volumen || 0),
+    piesDoyle: Number((piesDoyleFieldDetected && a[piesDoyleFieldDetected]) || 0),
     fechaMs: a.CreationDate,
     fecha: fmtDate(a.CreationDate),
     creator: safe(a.Creator, '—'),
@@ -505,27 +475,42 @@ function fillFilters(){
   setOpts('f-c', DB.map(r=>r.cuadrante), 'Todos');
   setOpts('f-t', DB.map(r=>r.tipo), 'Todos');
   setOpts('f-e', DB.map(r=>r.especie), 'Todas');
+
+  const adminConWrap = document.getElementById('adminConWrap');
+  const fCon = document.getElementById('f-con');
+  if(isAdmin() && adminConWrap && fCon){
+    const prev = new Set(flt.con || []);
+    const vals = [...new Set(DB.map(r=>r.concesion).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'es'));
+    fCon.innerHTML = vals.map(v=>`<option value="${String(v).replace(/"/g,'&quot;')}">${v}</option>`).join('');
+    [...fCon.options].forEach(o=>{ o.selected = prev.has(o.value); });
+    adminConWrap.style.display = 'block';
+  }else if(adminConWrap && fCon){
+    adminConWrap.style.display = 'none';
+    fCon.innerHTML = '';
+    flt.con = [];
+  }
 }
 
 function gf(){
   return DB.filter(r => {
     const s = flt.s.toLowerCase();
     if (s) {
-      const blob = [r.id, r.bacadilla, r.cuadrante, r.arbol, r.seccion, r.tipo, r.especie].join(' ').toLowerCase();
+      const blob = [r.id, r.concesion, r.bacadilla, r.cuadrante, r.arbol, r.seccion, r.tipo, r.especie].join(' ').toLowerCase();
       if (!blob.includes(s)) return false;
     }
     if (flt.b && String(r.bacadilla) !== flt.b) return false;
     if (flt.c && String(r.cuadrante) !== flt.c) return false;
     if (flt.t && String(r.tipo) !== flt.t) return false;
     if (flt.e && String(r.especie) !== flt.e) return false;
+    if (isAdmin() && flt.con.length && !flt.con.some(c => normalizeConcesion(c) === r.concesionNorm)) return false;
     return true;
   });
 }
 
-function af(){ flt.s=document.getElementById('f-s').value; flt.b=document.getElementById('f-b').value; flt.c=document.getElementById('f-c').value; flt.t=document.getElementById('f-t').value; flt.e=document.getElementById('f-e').value; applyFilters(); }
-function rf(){ flt={s:'',b:'',c:'',t:'',e:''}; ['f-s','f-b','f-c','f-t','f-e'].forEach(id=>document.getElementById(id).value=''); applyFilters(); }
-function rChips(){ const lbs=[]; if(flt.s) lbs.push(['Búsqueda: "'+flt.s+'"','s']); if(flt.b) lbs.push(['Bacadilla: '+flt.b,'b']); if(flt.c) lbs.push(['Cuadrante: '+flt.c,'c']); if(flt.t) lbs.push(['Tipo: '+flt.t,'t']); if(flt.e) lbs.push(['Especie: '+flt.e,'e']); document.getElementById('f-chips').innerHTML = lbs.map(([lb,k])=>`<button class="chip" onclick="clChip('${k}')">${lb} <span>✕</span></button>`).join(''); }
-function clChip(k){ flt[k]=''; const mp={s:'f-s',b:'f-b',c:'f-c',t:'f-t',e:'f-e'}; document.getElementById(mp[k]).value=''; applyFilters(); }
+function af(){ flt.s=document.getElementById('f-s').value; flt.b=document.getElementById('f-b').value; flt.c=document.getElementById('f-c').value; flt.t=document.getElementById('f-t').value; flt.e=document.getElementById('f-e').value; flt.con=isAdmin()?getSelectedValues('f-con'):[]; applyFilters(); }
+function rf(){ flt={s:'',b:'',c:'',t:'',e:'',con:[]}; ['f-s','f-b','f-c','f-t','f-e'].forEach(id=>document.getElementById(id).value=''); const fCon=document.getElementById('f-con'); if(fCon) [...fCon.options].forEach(o=>o.selected=false); applyFilters(); }
+function rChips(){ const lbs=[]; if(flt.s) lbs.push(['Búsqueda: "'+flt.s+'"','s']); if(flt.b) lbs.push(['Bacadilla: '+flt.b,'b']); if(flt.c) lbs.push(['Cuadrante: '+flt.c,'c']); if(flt.t) lbs.push(['Tipo: '+flt.t,'t']); if(flt.e) lbs.push(['Especie: '+flt.e,'e']); if(isAdmin() && flt.con.length) lbs.push([`Concesión: ${flt.con.join(', ')}`,'con']); document.getElementById('f-chips').innerHTML = lbs.map(([lb,k])=>`<button class="chip" onclick="clChip('${k}')">${lb} <span>✕</span></button>`).join(''); }
+function clChip(k){ if(k==='con'){ flt.con=[]; const fCon=document.getElementById('f-con'); if(fCon) [...fCon.options].forEach(o=>o.selected=false); } else { flt[k]=''; const mp={s:'f-s',b:'f-b',c:'f-c',t:'f-t',e:'f-e'}; document.getElementById(mp[k]).value=''; } applyFilters(); }
 
 function applyFilters(){
   filtered = gf();
@@ -544,7 +529,7 @@ function renderStats(f){
   const especies = new Set(f.map(r=>r.especie).filter(Boolean)).size;
   const cuadrantes = new Set(f.map(r=>r.cuadrante).filter(Boolean)).size;
   document.getElementById('sg').innerHTML = `
-    <div class="sc" style="--sc-a:var(--c-blue3);--sc-ib:rgba(33,150,243,.15);--sc-ic:var(--c-blue3)"><div class="sc-hd"><div><div class="sc-v">${total}</div><div class="sc-l">Total de registros</div><div class="sc-s">Lectura directa desde ArcGIS</div></div><div class="sc-ic"><i class="fa-solid fa-database"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-blue3);--sc-ib:rgba(33,150,243,.15);--sc-ic:var(--c-blue3)"><div class="sc-hd"><div><div class="sc-v">${total}</div><div class="sc-l">Total de registros</div><div class="sc-s">Provenientes de Survey 123</div></div><div class="sc-ic"><i class="fa-solid fa-database"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-gold);--sc-ib:rgba(232,168,32,.15);--sc-ic:var(--c-gold)"><div class="sc-hd"><div><div class="sc-v">${fmtNum(volTotal,2)}</div><div class="sc-l">Volumen total (m³)</div><div class="sc-s">Suma del campo volumen</div></div><div class="sc-ic"><i class="fa-solid fa-cubes-stacked"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-sky);--sc-ib:rgba(3,168,212,.15);--sc-ic:var(--c-sky)"><div class="sc-hd"><div><div class="sc-v">${especies}</div><div class="sc-l">Especies distintas</div><div class="sc-s">Diversidad observada</div></div><div class="sc-ic"><i class="fa-solid fa-leaf"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-ok);--sc-ib:rgba(30,184,122,.15);--sc-ic:var(--c-ok)"><div class="sc-hd"><div><div class="sc-v">${cuadrantes}</div><div class="sc-l">Cuadrantes activos</div><div class="sc-s">Cobertura espacial</div></div><div class="sc-ic"><i class="fa-solid fa-table-cells-large"></i></div></div></div>`;
@@ -569,6 +554,20 @@ function renderCharts(f){
   const especieVolTop = topN(especieVol, 8);
   dk('c4'); document.getElementById('cb4').textContent = fmtNum(f.reduce((s,r)=>s+(Number(r.volumen)||0),0),2);
   chts.c4 = new Chart(document.getElementById('ch4').getContext('2d'), { type:'bar', data:{ labels: especieVolTop.map(d=>d[0]||'—'), datasets:[{ data: especieVolTop.map(d=>Number(d[1].toFixed(2))), backgroundColor:'rgba(30,184,122,.65)', borderColor:'#1eb87a', borderWidth:2, borderRadius:6 }] }, options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}},beginAtZero:true}, y:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans',size:11}}} } } });
+
+  const cc5 = document.getElementById('cc5');
+  if(isAdmin()){
+    const conCount = {};
+    f.forEach(r => conCount[r.concesion] = (conCount[r.concesion] || 0) + 1);
+    const conEntries = Object.entries(conCount).sort((a,b)=>b[1]-a[1]);
+    dk('c5');
+    if(cc5) cc5.style.display = 'block';
+    document.getElementById('cb5').textContent = `${conEntries.length} concesión${conEntries.length !== 1 ? 'es' : ''}`;
+    chts.c5 = new Chart(document.getElementById('ch5').getContext('2d'), { type:'bar', data:{ labels: conEntries.map(d=>d[0]||'—'), datasets:[{ data: conEntries.map(d=>d[1]), backgroundColor:'rgba(124,92,191,.65)', borderColor:'#7c5cbf', borderWidth:2, borderRadius:6, borderSkipped:false }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans',size:11}}}, y:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}},beginAtZero:true} } } });
+  }else{
+    dk('c5');
+    if(cc5) cc5.style.display = 'none';
+  }
 }
 
 function renderTable(f){
@@ -577,6 +576,7 @@ function renderTable(f){
     <tr>
       <td class="chk"><input type="checkbox" ${selected.has(r.id) ? 'checked' : ''} onchange="toggleShipment(${r.id})"></td>
       <td class="tm">#${r.id}</td>
+      <td>${safe(r.concesion)}</td>
       <td>${safe(r.bacadilla)}</td>
       <td><span class="tb2">${safe(r.cuadrante)}</span></td>
       <td>${safe(r.arbol)}</td>
@@ -604,7 +604,7 @@ function renderSelected(){
   const vals = [...selected.values()];
   document.getElementById('selectedList').innerHTML = vals.length ? vals.map(r => `
     <div class="sel-item">
-      <div><strong>${safe(r.especie,'Sin especie')}</strong><small>Cuadrante ${safe(r.cuadrante)} · Troza ${safe(r.arbol)} · ${safe(r.tipo)} · ${fmtNum(r.volumen,2)} m³</small></div>
+      <div><strong>${safe(r.especie,'Sin especie')}</strong><small>Cuadrante ${safe(r.cuadrante)} · Troza ${safe(r.arbol)} · ${safe(r.tipo)} · ${fmtNum(r.volumen,2)} m³ · ${fmtNum(r.piesDoyle,2)} pies Doyle</small></div>
       <button class="rm" onclick="toggleShipment(${r.id})">Quitar</button>
     </div>`).join('') : '<div style="color:var(--tx2)">Aún no has seleccionado registros.</div>';
   document.getElementById('sb-sel').textContent = vals.length;
@@ -613,10 +613,12 @@ function renderSelected(){
 function renderShipmentSection(){
   const vals = [...selected.values()].sort((a,b)=>String(a.cuadrante).localeCompare(String(b.cuadrante),'es') || String(a.arbol).localeCompare(String(b.arbol),'es',{numeric:true}));
   const totalVol = vals.reduce((s,r)=>s+(Number(r.volumen)||0),0);
+  const totalPiesDoyle = vals.reduce((s,r)=>s+(Number(r.piesDoyle)||0),0);
   const species = new Set(vals.map(v=>v.especie).filter(Boolean)).size;
   document.getElementById('shipmentStats').innerHTML = `
     <div class="sc" style="--sc-a:var(--c-blue3);--sc-ib:rgba(33,150,243,.15);--sc-ic:var(--c-blue3)"><div class="sc-hd"><div><div class="sc-v">${vals.length}</div><div class="sc-l">Seleccionados</div><div class="sc-s">Registros listos para envío</div></div><div class="sc-ic"><i class="fa-solid fa-check-double"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-ok);--sc-ib:rgba(30,184,122,.15);--sc-ic:var(--c-ok)"><div class="sc-hd"><div><div class="sc-v">${fmtNum(totalVol,2)}</div><div class="sc-l">Volumen del envío</div><div class="sc-s">m³ acumulados</div></div><div class="sc-ic"><i class="fa-solid fa-cubes"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-violet);--sc-ib:rgba(124,92,191,.16);--sc-ic:#c4b5fd"><div class="sc-hd"><div><div class="sc-v">${fmtNum(totalPiesDoyle,2)}</div><div class="sc-l">Total pies Doyle</div><div class="sc-s">Solo registros seleccionados</div></div><div class="sc-ic"><i class="fa-solid fa-ruler-horizontal"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-gold);--sc-ib:rgba(232,168,32,.15);--sc-ic:var(--c-gold)"><div class="sc-hd"><div><div class="sc-v">${species}</div><div class="sc-l">Especies</div><div class="sc-s">Diversidad en el envío</div></div><div class="sc-ic"><i class="fa-solid fa-leaf"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-sky);--sc-ib:rgba(3,168,212,.15);--sc-ic:var(--c-sky)"><div class="sc-hd"><div><div class="sc-v">${new Set(vals.map(v=>v.cuadrante).filter(Boolean)).size}</div><div class="sc-l">Cuadrantes</div><div class="sc-s">Cobertura del envío</div></div><div class="sc-ic"><i class="fa-solid fa-table-cells"></i></div></div></div>`;
   document.getElementById('shipmentTable').innerHTML = vals.length ? vals.map(r => `
@@ -628,12 +630,13 @@ function renderShipmentSection(){
       <td><span class="bm ${tipoCls(r.tipo)}">${safe(r.tipo)}</span></td>
       <td>${safe(r.especie)}</td>
       <td>${fmtNum(r.volumen,2)}</td>
+      <td>${fmtNum(r.piesDoyle,2)}</td>
       <td><button class="rm" onclick="toggleShipment(${r.id})">Quitar</button></td>
-    </tr>`).join('') : '<tr><td colspan="8" style="color:#8fb0cf">No has seleccionado registros todavía.</td></tr>';
+    </tr>`).join('') : '<tr><td colspan="9" style="color:#8fb0cf">No has seleccionado registros todavía.</td></tr>';
 }
 
 function updateBoletaButtons(){
-  const enabled = selected.size > 0;
+  const enabled = isAdmin() ? filtered.length > 0 : selected.size > 0;
   document.getElementById('envioPreviewBtn').disabled = !enabled;
   document.getElementById('topPreviewBtn').disabled = !enabled;
 }
@@ -662,6 +665,15 @@ function updateUserBadge(){
   const role = document.querySelector('.sb-usr .ur');
   if(usr) usr.textContent = currentUser.nombre || currentUser.email;
   if(role) role.textContent = `${currentUser.role} · ${currentUser.concesion}`;
+}
+
+function updateAdminUI(){
+  const adminConWrap = document.getElementById('adminConWrap');
+  if(adminConWrap) adminConWrap.style.display = isAdmin() ? 'block' : 'none';
+  const topBtn = document.getElementById('topPreviewBtn');
+  const envioBtn = document.getElementById('envioPreviewBtn');
+  if(topBtn) topBtn.innerHTML = isAdmin() ? '<i class="fa-solid fa-file-lines"></i><span class="d-none d-md-inline">Informe</span>' : '<i class="fa-solid fa-file-lines"></i><span class="d-none d-md-inline">Boleta</span>';
+  if(envioBtn) envioBtn.innerHTML = isAdmin() ? '<i class="fa-solid fa-file-lines"></i> Generar informe' : '<i class="fa-solid fa-file-lines"></i> Generar boleta';
 }
 
 async function login(){
@@ -693,6 +705,7 @@ async function logout(){
   filtered = [];
   selected.clear();
   setAppVisibility(false);
+updateAdminUI();
   document.getElementById('loginPass').value = '';
   const emailEl = document.getElementById('loginEmail');
   if(emailEl) emailEl.value = '';
@@ -701,6 +714,7 @@ async function logout(){
   document.getElementById('selectedList').innerHTML = '<div style="color:var(--tx2)">Aún no has seleccionado registros.</div>';
   document.getElementById('sb-n').textContent = '0';
   document.getElementById('sb-sel').textContent = '0';
+  updateAdminUI();
 }
 
 document.addEventListener('keydown', (e)=>{
@@ -756,10 +770,10 @@ function renderMap(f){
     const c = selected.has(r.id) ? '#10b981' : typeColor(r.tipo);
     if(Number.isFinite(r.y) && Number.isFinite(r.x)){
       const ico=L.divIcon({ html:`<div style="width:12px;height:12px;border-radius:50%;background:${c};border:2px solid white;box-shadow:0 0 8px ${c}99"></div>`, iconSize:[12,12],iconAnchor:[6,6],className:'' });
-      const mk=L.marker([r.y,r.x],{icon:ico}).addTo(lmap).bindPopup(`<div class="pp-in"><div class="pp-r"><span>ID</span><b>#${r.id}</b></div><div class="pp-r"><span>Especie</span><b>${safe(r.especie)}</b></div><div class="pp-r"><span>Cuadrante</span><b>${safe(r.cuadrante)}</b></div><div class="pp-r"><span>Árbol</span><b>${safe(r.arbol)}</b></div><div class="pp-r"><span>Volumen</span><b>${fmtNum(r.volumen,2)} m³</b></div></div>`,{className:'xp'});
+      const mk=L.marker([r.y,r.x],{icon:ico}).addTo(lmap).bindPopup(`<div class="pp-in"><div class="pp-r"><span>ID</span><b>#${r.id}</b></div><div class="pp-r"><span>Concesión</span><b>${safe(r.concesion)}</b></div><div class="pp-r"><span>Especie</span><b>${safe(r.especie)}</b></div><div class="pp-r"><span>Cuadrante</span><b>${safe(r.cuadrante)}</b></div><div class="pp-r"><span>Árbol</span><b>${safe(r.arbol)}</b></div><div class="pp-r"><span>Volumen</span><b>${fmtNum(r.volumen,2)} m³</b></div></div>`,{className:'xp'});
       lmk.push(mk);
     }
-    const it=document.createElement('div'); it.className='mi' + (selected.has(r.id) ? ' hi' : ''); it.innerHTML=`<div class="mi-dot" style="background:${c}"></div><div><div class="mi-n">${safe(r.especie)} — Árbol ${safe(r.arbol)}</div><div class="mi-m">${safe(r.tipo)} · Bacadilla ${safe(r.bacadilla)} · Cuadrante ${safe(r.cuadrante)}</div></div>`; it.onclick=()=>{ if(Number.isFinite(r.y) && Number.isFinite(r.x)) lmap.setView([r.y,r.x],16); toggleShipment(r.id); }; lel.appendChild(it);
+    const it=document.createElement('div'); it.className='mi' + (selected.has(r.id) ? ' hi' : ''); it.innerHTML=`<div class="mi-dot" style="background:${c}"></div><div><div class="mi-n">${safe(r.especie)} — Árbol ${safe(r.arbol)}</div><div class="mi-m">${safe(r.concesion)} · ${safe(r.tipo)} · Bacadilla ${safe(r.bacadilla)} · Cuadrante ${safe(r.cuadrante)}</div></div>`; it.onclick=()=>{ if(Number.isFinite(r.y) && Number.isFinite(r.x)) lmap.setView([r.y,r.x],16); toggleShipment(r.id); }; lel.appendChild(it);
   });
   if(lmk.length>0){ const group=L.featureGroup(lmk); const bounds=group.getBounds().pad(0.15); if(document.getElementById('vp-map').classList.contains('on')) lmap.fitBounds(bounds,{maxZoom:16}); else lmap._pendingBounds=bounds; }
 }
@@ -770,6 +784,7 @@ function viewRecord(id){
     <div class="dg">
       <div class="di"><div class="dk">ID</div><div class="dv tm">#${r.id}</div></div>
       <div class="di"><div class="dk">GlobalID</div><div class="dv tm">${safe(r.globalid)}</div></div>
+      <div class="di"><div class="dk">Concesión</div><div class="dv">${safe(r.concesion)}</div></div>
       <div class="di"><div class="dk">Número de bacadilla</div><div class="dv">${safe(r.bacadilla)}</div></div>
       <div class="di"><div class="dk">Cuadrante</div><div class="dv">${safe(r.cuadrante)}</div></div>
       <div class="di"><div class="dk">Número de árbol</div><div class="dv">${safe(r.arbol)}</div></div>
@@ -780,6 +795,7 @@ function viewRecord(id){
       <div class="di"><div class="dk">Diámetro 2</div><div class="dv">${fmtNum(r.diam2,0)} cm</div></div>
       <div class="di"><div class="dk">Largo</div><div class="dv">${fmtNum(r.largo,1)} m</div></div>
       <div class="di"><div class="dk">Volumen</div><div class="dv">${fmtNum(r.volumen,2)} m³</div></div>
+      <div class="di"><div class="dk">Pies Doyle</div><div class="dv">${fmtNum(r.piesDoyle,2)}</div></div>
       <div class="di"><div class="dk">Fecha</div><div class="dv tm">${r.fecha}</div></div>
       <div class="di"><div class="dk">Coordenadas</div><div class="dv tm">${Number.isFinite(r.y)&&Number.isFinite(r.x) ? r.y.toFixed(6)+', '+r.x.toFixed(6) : 'Sin coordenadas'}</div></div>
     </div>`;
@@ -788,53 +804,231 @@ function viewRecord(id){
 
 function clearShipmentForm(){ ['guiaNo','envioNo','licenciaForest','destino','conductor','licenciaConductor','vehiculo','placas','marca','color','despachadoPor','conductorResp','encargadoAserradero'].forEach(id => document.getElementById(id).value = ''); document.getElementById('fecha').value = new Date().toISOString().slice(0,10); }
 
+function escapeHtml(v){ return String(v ?? '').replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m] || m)); }
+function getSortedRows(rows){ return [...rows].sort((a,b)=> String(a.concesion).localeCompare(String(b.concesion),'es') || String(a.cuadrante).localeCompare(String(b.cuadrante),'es') || String(a.arbol).localeCompare(String(b.arbol),'es',{numeric:true})); }
+function getRowsForPreview(){ return isAdmin() ? getSortedRows(filtered) : getSortedRows([...selected.values()]); }
+function getPreviewDate(){ return document.getElementById('fecha')?.value || new Date().toISOString().slice(0,10); }
+
 function buildSummary(rows){
   const grouped = new Map();
   rows.forEach(r => {
-    const key = `${r.tipo}||${r.especie}`;
-    if(!grouped.has(key)) grouped.set(key, {cantidad:0, tipo:r.tipo, especie:r.especie, volumen:0});
-    const g = grouped.get(key); g.cantidad += 1; g.volumen += Number(r.volumen || 0);
+    const key = isAdmin() ? `${r.concesion}||${r.tipo}||${r.especie}` : `${r.tipo}||${r.especie}`;
+    if(!grouped.has(key)) grouped.set(key, {concesion:r.concesion, cantidad:0, tipo:r.tipo, especie:r.especie, volumen:0, piesDoyle:0});
+    const g = grouped.get(key); g.cantidad += 1; g.volumen += Number(r.volumen || 0); g.piesDoyle += Number(r.piesDoyle || 0);
   });
-  return [...grouped.values()].sort((a,b)=>String(a.especie).localeCompare(String(b.especie),'es'));
+  return [...grouped.values()].sort((a,b)=> String(a.concesion || '').localeCompare(String(b.concesion || ''),'es') || String(a.especie).localeCompare(String(b.especie),'es'));
+}
+
+function buildConcessionSummary(rows){
+  const grouped = new Map();
+  rows.forEach(r => {
+    const key = r.concesion || 'Sin concesión';
+    if(!grouped.has(key)) grouped.set(key, {concesion:key, cantidad:0, especies:new Set(), cuadrantes:new Set(), volumen:0, piesDoyle:0});
+    const g = grouped.get(key);
+    g.cantidad += 1;
+    if(r.especie) g.especies.add(r.especie);
+    if(r.cuadrante) g.cuadrantes.add(r.cuadrante);
+    g.volumen += Number(r.volumen || 0);
+    g.piesDoyle += Number(r.piesDoyle || 0);
+  });
+  return [...grouped.values()].map(g => ({...g, especies:g.especies.size, cuadrantes:g.cuadrantes.size})).sort((a,b)=> String(a.concesion).localeCompare(String(b.concesion),'es'));
+}
+
+const PRINT_BRANDING = {
+  UAXACTUN: {
+    title: 'UNIDAD DE MANEJO UAXACTÚN, FLORES, PETÉN',
+    logo: 'https://visituaxactun.com/omyc/wp-content/uploads/2020/07/Logo-OMYC-Footer.png',
+    alt: 'Uaxactún'
+  },
+  CARMELITA: {
+    title: 'UNIDAD DE MANEJO CARMELITA, FLORES, PETÉN',
+    logo: 'https://turismocooperativacarmelita.com/wp-content/themes/carmelita/images/lg.png',
+    alt: 'Carmelita'
+  },
+  YALOCH: {
+    title: 'UNIDAD DE MANEJO YALOCH, FLORES, PETÉN',
+    logo: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhRv5DU74k7QQXXocb2wDkKkhSC4_vMm8tzpP3-9iAlgrJIaP8CBlB3JlNSrp3aXGURL6CIRZkjABqsRnYXUpkhyphenhyphen9pxy1BaN25SlYtnpGYXXQrhfie813qbRuajT2OjFhoDMclFyrSStWWpYJHru1mhCJ7HQamyLxz9wwB7YmbwaFp5VbG3E7Z_GuA2jEM/s16000/logoyaloch.jpg',
+    alt: 'Yaloch'
+  },
+  AFISAP: {
+    title: 'UNIDAD DE MANEJO AFISAP, FLORES, PETÉN',
+    logo: 'https://pbs.twimg.com/profile_images/992176392539459585/WAwRlddv_400x400.jpg',
+    alt: 'AFISAP'
+  }
+};
+
+function getBrandingByConcesion(concesion){
+  const key = normalizeConcesion(concesion);
+  return PRINT_BRANDING[key] || { title: concesion || 'SIN CONCESIÓN', logo: '', alt: concesion || 'Sin concesión' };
+}
+
+function getPrintBranding(){
+  const key = normalizeConcesion(currentUser?.concesion);
+  return PRINT_BRANDING[key] || PRINT_BRANDING.UAXACTUN;
+}
+
+function renderNormalPrintLayout(rows, includeDoyle){
+  const branding = getPrintBranding();
+  const summary = buildSummary(rows);
+  const totalVol = rows.reduce((s,r)=>s + Number(r.volumen || 0), 0);
+  const totalDoyle = rows.reduce((s,r)=>s + Number(r.piesDoyle || 0), 0);
+  const summaryHead = includeDoyle ? '<th id="summaryResumeDoyleHead">Pies Doyle</th>' : '';
+  const summaryRows = summary.map(s => `<tr><td>${s.cantidad}</td><td>${safe(s.tipo)}</td><td>${safe(s.especie)}</td><td>${fmtNum(s.volumen,2)}</td>${includeDoyle ? `<td>${fmtNum(s.piesDoyle,2)}</td>` : ''}</tr>`).join('');
+  const detailRows = rows.map(r => `<tr><td>${safe(r.cuadrante)}</td><td>${safe(r.arbol)}</td><td>${safe(r.seccion)}</td><td>${safe(r.tipo)}</td><td>${safe(r.especie)}</td><td>${fmtNum(r.volumen,2)}</td>${includeDoyle ? `<td>${fmtNum(r.piesDoyle,2)}</td>` : ''}</tr>`).join('');
+  const detailHead = includeDoyle ? '<th>Pies Doyle</th>' : '';
+  const detailTotal = includeDoyle ? `<td id="shipmentTotalDoyle">${fmtNum(totalDoyle,2)}</td>` : '';
+  const totalColspan = includeDoyle ? 5 : 5;
+  const signBlock = `
+    <div class="sign-grid">
+      <div class="sign-col">
+        <div class="sign-row"><div><b>Despachado por:</b></div><div class="sign-line">${escapeHtml(document.getElementById('despachadoPor')?.value || '')}</div></div>
+        <div class="sign-row"><div><b>Conductor responsable:</b></div><div class="sign-line">${escapeHtml(document.getElementById('conductorResp')?.value || '')}</div></div>
+        <div class="sign-row"><div><b>Encargado Aserradero:</b></div><div class="sign-line">${escapeHtml(document.getElementById('encargadoAserradero')?.value || '')}</div></div>
+      </div>
+      <div class="sign-col">
+        <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
+        <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
+        <div class="sign-row"><div><b>Firma:</b></div><div class="sign-line"></div></div>
+      </div>
+    </div>`;
+
+  return `
+    <div class="doc-header">
+      <div class="logo-side">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPwrmbeOCx8R45rEYWyUgpGxCur87BLDWxNATI-A9lDytrJgDof-5nKg3LtOBkdm2EV3f-cj1304dspDGAnaJlffoKmoB5a6GiPqyrctDRNx1UPAtsq9sOw1B1N8KZ1sFQ41qAfhOsKjFRyChVOw5A10peDiNIFg3Sz3pXNmGDGDMxq4Wj8xdJa9Iylpw/s1815/Paculogo_ambiental.jpg" alt="PACUNAM" onerror="this.style.display='none'">
+      </div>
+      <div class="doc-title">
+        <h2>ENVÍO INTERNO DE MADERA</h2>
+        <h2>CERTIFICADA EN ROLLO</h2>
+        <h2>${branding.title}</h2>
+        <div class="doc-subtitle">Formato electrónico de nota de envío con apoyo de PACUNAM</div>
+      </div>
+      <div class="logo-side">
+        <img src="${branding.logo}" alt="${branding.alt}">
+      </div>
+    </div>
+    <div class="box-grid">
+      <div class="cell label">Guía No.</div><div class="cell value">${escapeHtml(document.getElementById('guiaNo')?.value || '—')}</div>
+      <div class="cell label">Envío No.</div><div class="cell value">${escapeHtml(document.getElementById('envioNo')?.value || '—')}</div>
+      <div class="cell label">Fecha</div><div class="cell value">${escapeHtml(getPreviewDate())}</div>
+      <div class="cell label">Licencia forestal</div><div class="cell value">${escapeHtml(document.getElementById('licenciaForest')?.value || '—')}</div>
+      <div class="cell label">Destino</div><div class="cell value">${escapeHtml(document.getElementById('destino')?.value || '—')}</div>
+      <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
+      <div class="cell label">Conductor</div><div class="cell value">${escapeHtml(document.getElementById('conductor')?.value || '—')}</div>
+      <div class="cell label">Licencia No.</div><div class="cell value">${escapeHtml(document.getElementById('licenciaConductor')?.value || '—')}</div>
+      <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
+      <div class="cell label">Vehículo</div><div class="cell value">${escapeHtml(document.getElementById('vehiculo')?.value || '—')}</div>
+      <div class="cell label">No. placas</div><div class="cell value">${escapeHtml(document.getElementById('placas')?.value || '—')}</div>
+      <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
+      <div class="cell label">Marca</div><div class="cell value">${escapeHtml(document.getElementById('marca')?.value || '—')}</div>
+      <div class="cell label">Color</div><div class="cell value">${escapeHtml(document.getElementById('color')?.value || '—')}</div>
+      <div class="cell label">&nbsp;</div><div class="cell value">&nbsp;</div>
+    </div>
+    <div class="section-title">CADENA DE CUSTODIA</div>
+    <table class="doc-table">
+      <thead><tr><th>Cuadrante</th><th>No. troza</th><th>Sección</th><th>Tipo*</th><th>Especie</th><th>Vol. m³</th>${detailHead}</tr></thead>
+      <tbody>${detailRows}</tbody>
+      <tfoot><tr class="tot-row"><td colspan="5" style="text-align:center">TOTAL</td><td>${fmtNum(totalVol,2)}</td>${detailTotal}</tr></tfoot>
+    </table>
+    <div class="summary-wrap">
+      <div class="summary-left"></div>
+      <div class="summary-right">
+        <div class="summary-head">RESUMEN</div>
+        <table class="summary-table">
+          <thead><tr><th>Cantidad</th><th>Tipo</th><th>Especie</th><th>Volumen</th>${summaryHead}</tr></thead>
+          <tbody>${summaryRows}</tbody>
+        </table>
+      </div>
+    </div>
+    ${signBlock}
+    <div class="foot"><div><small>*T = troza &nbsp;&nbsp; *R = rama &nbsp;&nbsp; *RE = ramas escuadras</small></div><div>PBN-FM/COC-000161 &nbsp;&nbsp;&nbsp; FSC 100%</div></div>`;
+}
+
+function renderAdminPrintLayout(rows, includeDoyle){
+  const selectedConcesiones = (flt.con && flt.con.length) ? flt.con : [...new Set(rows.map(r => r.concesion).filter(Boolean))];
+  const concessionSummary = buildConcessionSummary(rows);
+  const groupedSummary = buildSummary(rows);
+  const totalVol = rows.reduce((s,r)=>s + Number(r.volumen || 0), 0);
+  const totalDoyle = rows.reduce((s,r)=>s + Number(r.piesDoyle || 0), 0);
+  const totalSpecies = new Set(rows.map(r => r.especie).filter(Boolean)).size;
+  const totalQuadrants = new Set(rows.map(r => r.cuadrante).filter(Boolean)).size;
+  const detailHead = includeDoyle ? '<th>Pies Doyle</th>' : '';
+  const detailRows = rows.map(r => `<tr><td>${safe(r.concesion)}</td><td>${safe(r.bacadilla)}</td><td>${safe(r.cuadrante)}</td><td>${safe(r.arbol)}</td><td>${safe(r.seccion)}</td><td>${safe(r.tipo)}</td><td>${safe(r.especie)}</td><td>${fmtNum(r.volumen,2)}</td>${includeDoyle ? `<td>${fmtNum(r.piesDoyle,2)}</td>` : ''}</tr>`).join('');
+  const detailTotal = includeDoyle ? `<td>${fmtNum(totalDoyle,2)}</td>` : '';
+  const concessionLogos = selectedConcesiones.map(con => {
+    const brand = getBrandingByConcesion(con);
+    const img = brand.logo ? `<img src="${brand.logo}" alt="${brand.alt}" onerror="this.style.display='none'">` : '';
+    return `<div class="admin-brand-chip">${img}<span>${escapeHtml(con)}</span></div>`;
+  }).join('');
+  const concessionRows = concessionSummary.map(c => `<tr><td>${safe(c.concesion)}</td><td>${c.cantidad}</td><td>${c.especies}</td><td>${c.cuadrantes}</td><td>${fmtNum(c.volumen,2)}</td>${includeDoyle ? `<td>${fmtNum(c.piesDoyle,2)}</td>` : ''}</tr>`).join('');
+  const groupedRows = groupedSummary.map(s => `<tr><td>${safe(s.concesion)}</td><td>${s.cantidad}</td><td>${safe(s.tipo)}</td><td>${safe(s.especie)}</td><td>${fmtNum(s.volumen,2)}</td>${includeDoyle ? `<td>${fmtNum(s.piesDoyle,2)}</td>` : ''}</tr>`).join('');
+  return `
+    <div class="doc-header">
+      <div class="logo-side">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPwrmbeOCx8R45rEYWyUgpGxCur87BLDWxNATI-A9lDytrJgDof-5nKg3LtOBkdm2EV3f-cj1304dspDGAnaJlffoKmoB5a6GiPqyrctDRNx1UPAtsq9sOw1B1N8KZ1sFQ41qAfhOsKjFRyChVOw5A10peDiNIFg3Sz3pXNmGDGDMxq4Wj8xdJa9Iylpw/s1815/Paculogo_ambiental.jpg" alt="PACUNAM" onerror="this.style.display='none'">
+      </div>
+      <div class="doc-title">
+        <h2>INFORME GENERAL DE CADENA DE CUSTODIA</h2>
+        <h2>CONSOLIDADO POR CONCESIONES</h2>
+        <h2>RESERVA DE LA BIOSFERA MAYA, PETÉN</h2>
+        <div class="doc-subtitle">Reporte administrativo consolidado para comparación y trazabilidad interconcesional</div>
+      </div>
+      <div class="logo-side"><div class="admin-brand-grid">${concessionLogos}</div></div>
+    </div>
+    <div class="report-meta">
+      <div class="cell label">Fecha de emisión</div><div class="cell value">${escapeHtml(getPreviewDate())}</div>
+      <div class="cell label">Usuario</div><div class="cell value">${escapeHtml(currentUser?.nombre || currentUser?.email || 'Administrador')}</div>
+      <div class="cell label">Rol</div><div class="cell value">${escapeHtml(currentUser?.role || 'Administrador')}</div>
+      <div class="cell label">Concesiones incluidas</div><div class="cell value">${escapeHtml(selectedConcesiones.join(', ') || 'Todas')}</div>
+      <div class="cell label">Registros consolidados</div><div class="cell value">${rows.length}</div>
+      <div class="cell label">Volumen total</div><div class="cell value">${fmtNum(totalVol,2)} m³</div>
+      <div class="cell label">Especies distintas</div><div class="cell value">${totalSpecies}</div>
+      <div class="cell label">Cuadrantes cubiertos</div><div class="cell value">${totalQuadrants}</div>
+      <div class="cell label">Pies Doyle</div><div class="cell value">${includeDoyle ? fmtNum(totalDoyle,2) : 'No incluido en impresión'}</div>
+    </div>
+    <div class="report-note"><b>Alcance del informe:</b> este reporte consolida la cadena de custodia de los registros visibles para el administrador según las concesiones seleccionadas en el panel lateral y los filtros activos del sistema al momento de la generación.</div>
+    <div class="section-title">RESUMEN POR CONCESIÓN</div>
+    <table class="doc-table">
+      <thead><tr><th>Concesión</th><th>Registros</th><th>Especies</th><th>Cuadrantes</th><th>Vol. m³</th>${includeDoyle ? '<th>Pies Doyle</th>' : ''}</tr></thead>
+      <tbody>${concessionRows}</tbody>
+      <tfoot><tr class="tot-row"><td style="text-align:center">TOTAL</td><td>${rows.length}</td><td>${totalSpecies}</td><td>${totalQuadrants}</td><td>${fmtNum(totalVol,2)}</td>${includeDoyle ? `<td>${fmtNum(totalDoyle,2)}</td>` : ''}</tr></tfoot>
+    </table>
+    <div class="section-title">DETALLE CONSOLIDADO DE CADENA DE CUSTODIA</div>
+    <table class="doc-table">
+      <thead><tr><th>Concesión</th><th>Bacadilla</th><th>Cuadrante</th><th>No. troza</th><th>Sección</th><th>Tipo</th><th>Especie</th><th>Vol. m³</th>${detailHead}</tr></thead>
+      <tbody>${detailRows}</tbody>
+      <tfoot><tr class="tot-row"><td colspan="7" style="text-align:center">TOTAL</td><td>${fmtNum(totalVol,2)}</td>${detailTotal}</tr></tfoot>
+    </table>
+    <div class="summary-wrap">
+      <div class="summary-left">
+        <div class="summary-head">RESUMEN POR TIPO Y ESPECIE</div>
+        <table class="summary-table">
+          <thead><tr><th>Concesión</th><th>Cantidad</th><th>Tipo</th><th>Especie</th><th>Volumen</th>${includeDoyle ? '<th>Pies Doyle</th>' : ''}</tr></thead>
+          <tbody>${groupedRows}</tbody>
+        </table>
+      </div>
+      <div class="summary-right">
+        <div class="summary-head">OBSERVACIONES</div>
+        <div style="padding:14px 16px;font-size:12px;line-height:1.55;min-height:220px">
+          <p><b>Concesiones evaluadas:</b> ${escapeHtml(selectedConcesiones.join(', ') || 'Todas')}</p>
+          <p><b>Interpretación sugerida:</b> utilice este consolidado para comparar la intensidad de extracción, diversidad de especies y distribución espacial por cuadrante entre concesiones activas.</p>
+          <p><b>Fuente:</b> registros visibles del sistema de trazabilidad y filtros activos aplicados por el administrador.</p>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div><small>Reporte administrativo consolidado generado automáticamente desde el Sistema Inteligente de trazabilidad</small></div><div>PACUNAM · ${escapeHtml(getPreviewDate())}</div></div>`;
 }
 
 function openPreview(){
-  if(selected.size === 0){ toast('Selecciona al menos un registro para el envío','wn'); return; }
-  const rows = [...selected.values()].sort((a,b)=>String(a.cuadrante).localeCompare(String(b.cuadrante),'es') || String(a.arbol).localeCompare(String(b.arbol),'es',{numeric:true}));
-  const summary = buildSummary(rows);
-  document.getElementById('outGuia').textContent = document.getElementById('guiaNo').value || '—';
-  document.getElementById('outEnvio').textContent = document.getElementById('envioNo').value || '—';
-  document.getElementById('outFecha').textContent = document.getElementById('fecha').value || '—';
-  document.getElementById('outLicForest').textContent = document.getElementById('licenciaForest').value || '—';
-  document.getElementById('outDestino').textContent = document.getElementById('destino').value || '—';
-  document.getElementById('outConductor').textContent = document.getElementById('conductor').value || '—';
-  document.getElementById('outLicCond').textContent = document.getElementById('licenciaConductor').value || '—';
-  document.getElementById('outVehiculo').textContent = document.getElementById('vehiculo').value || '—';
-  document.getElementById('outPlacas').textContent = document.getElementById('placas').value || '—';
-  document.getElementById('outMarca').textContent = document.getElementById('marca').value || '—';
-  document.getElementById('outColor').textContent = document.getElementById('color').value || '—';
-  document.getElementById('outDespachado').textContent = document.getElementById('despachadoPor').value || ' ';
-  document.getElementById('outConductorResp').textContent = document.getElementById('conductorResp').value || ' ';
-  document.getElementById('outEncargado').textContent = document.getElementById('encargadoAserradero').value || ' ';
-  document.getElementById('shipmentRows').innerHTML = rows.map(r => `
-    <tr>
-      <td>${safe(r.cuadrante,'')}</td>
-      <td>${safe(r.arbol,'')}</td>
-      <td>${safe(r.seccion,'')}</td>
-      <td>${safe(r.tipo,'')}</td>
-      <td>${safe(r.especie,'')}</td>
-      <td>${fmtNum(r.volumen,2)}</td>
-    </tr>`).join('');
-  document.getElementById('shipmentTotal').textContent = fmtNum(rows.reduce((a,b)=>a+(Number(b.volumen)||0),0));
-  document.getElementById('summaryRows').innerHTML = summary.map(s => `
-    <tr>
-      <td>${s.cantidad}</td>
-      <td>${safe(s.tipo,'')}</td>
-      <td>${safe(s.especie,'')}</td>
-      <td>${fmtNum(s.volumen,2)}</td>
-    </tr>`).join('');
+  const rows = getRowsForPreview();
+  if(isAdmin() && rows.length === 0){ toast('No hay registros visibles para generar el informe administrativo', 'wn'); return; }
+  if(!isAdmin() && rows.length === 0){ toast('Selecciona al menos un registro para el envío','wn'); return; }
+  const includeDoyle = document.getElementById('includeDoyleInBoleta')?.checked;
+  const html = isAdmin() ? renderAdminPrintLayout(rows, includeDoyle) : renderNormalPrintLayout(rows, includeDoyle);
+  document.getElementById('printArea').innerHTML = html;
   document.getElementById('previewModal').classList.add('show');
 }
+
 function closePreview(){ document.getElementById('previewModal').classList.remove('show'); }
 function printPreview(){
   const html = document.getElementById('printArea').outerHTML;
@@ -873,7 +1067,17 @@ function printPreview(){
     .sign-line{border-bottom:1px solid #111827;height:26px}
     .foot{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 4px 0;font-weight:800}
     .foot small{font-weight:700}
-  </style></head><body>${html}</body></html>`);
+  
+.admin-brand-grid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
+.admin-brand-chip{border:1px solid #d1d5db;border-radius:12px;padding:8px 10px;display:flex;align-items:center;gap:8px;background:#fff}
+.admin-brand-chip img{width:40px;height:40px;object-fit:contain;border-radius:8px}
+.admin-brand-chip span{font-size:11px;font-weight:700;line-height:1.2;color:#111827;max-width:110px}
+.report-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:10px;border-top:1px solid #111827;border-left:1px solid #111827}
+.report-meta .cell{min-height:38px}
+.report-note{margin-top:10px;padding:10px 12px;border:1px solid #111827;background:#f8fafc;font-size:12px;line-height:1.5}
+@media (max-width:900px){.report-meta{grid-template-columns:150px 1fr}.admin-brand-grid{justify-content:flex-start}}
+
+</style></head><body>${html}</body></html>`);
   w.document.close(); 
   w.focus(); 
   setTimeout(()=>w.print(),350);
@@ -881,8 +1085,8 @@ function printPreview(){
 
 function expCSV(){
   const f = filtered;
-  const h = ['ID','GlobalID','Bacadilla','Cuadrante','Arbol','Seccion','Tipo','Especie','Diametro1_cm','Diametro2_cm','Largo_m','Volumen_m3','CreationDate','Creator','EditDate','Editor','Latitud','Longitud'];
-  const rows = f.map(r => [r.id,r.globalid,r.bacadilla,r.cuadrante,r.arbol,r.seccion,r.tipo,r.especie,r.diam1,r.diam2,r.largo,r.volumen,r.fecha,r.creator,r.editDate,r.editor,r.y,r.x]);
+  const h = ['ID','GlobalID','Concesion','Bacadilla','Cuadrante','Arbol','Seccion','Tipo','Especie','Diametro1_cm','Diametro2_cm','Largo_m','Volumen_m3','Pies_Doyle','CreationDate','Creator','EditDate','Editor','Latitud','Longitud'];
+  const rows = f.map(r => [r.id,r.globalid,r.concesion,r.bacadilla,r.cuadrante,r.arbol,r.seccion,r.tipo,r.especie,r.diam1,r.diam2,r.largo,r.volumen,r.piesDoyle,r.fecha,r.creator,r.editDate,r.editor,r.y,r.x]);
   const csv = [h,...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'})); a.download='inventario_survey_envio.csv'; a.click();
   toast(f.length + ' registros exportados','ok');
@@ -925,6 +1129,7 @@ setAppVisibility(false);
   onAuthStateChanged(auth, async (user) => {
     if(!user){
       currentUser = null;
+      updateAdminUI();
       setAppVisibility(false);
       return;
     }
@@ -952,6 +1157,7 @@ setAppVisibility(false);
       clearLoginError();
       setAppVisibility(true);
       updateUserBadge();
+      updateAdminUI();
       selected.clear();
       loadData();
     }catch(e){
