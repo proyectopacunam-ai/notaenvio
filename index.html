@@ -84,7 +84,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
 </head>
 <body>
 
-
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card">
     <div class="login-brand">
@@ -122,7 +121,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
   <div class="sb-hd">
     <div class="logo-mark"><i class="fa-solid fa-tree"></i></div>
     <div class="logo-txt">
-      <div class="l1">Sistema <span>PACUNAM</span></div>
+      <div class="l1">Sistema <span>Inteligente</span></div>
       <div class="l2">Inventario + envío interno</div>
     </div>
   </div>
@@ -144,6 +143,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
   <header id="tb">
     <button id="btn-tog" onclick="togSB()"><i class="fa-solid fa-bars"></i></button>
     <div>
+	
+
       <div class="pg-t" id="pg-t">Panel General</div>
       <div class="pg-s" id="pg-s">Resumen estadístico del inventario forestal</div>
     </div>
@@ -158,6 +159,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
   </header>
   <main id="ct">
     <div class="fbar">
+
       <div class="fg"><label>Buscar</label><input class="fi w" id="f-s" placeholder="Especie, tipo, cuadrante, árbol, bacadilla…" oninput="af()"></div>
       <div class="fg"><label>Bacadilla</label><select class="fs" id="f-b" onchange="af()"><option value="">Todas</option></select></div>
       <div class="fg"><label>Cuadrante</label><select class="fs" id="f-c" onchange="af()"><option value="">Todos</option></select></div>
@@ -182,6 +184,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
         <div class="cc"><div class="cc-hd"><span class="cc-t"><i class="fa-solid fa-ruler-combined" style="color:var(--c-ok)"></i>Volumen acumulado por especie</span><span class="cc-b" id="cb4">m³</span></div><div class="cc-wrap"><canvas id="ch4"></canvas></div></div>
       </div>
     </div>
+
 
     <div class="vp" id="vp-table">
       <div class="layout-2">
@@ -255,6 +258,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
             </div>
           </div>
         </section>
+
         <section class="form-card">
           <div class="panel-h"><div><div class="panel-t">Datos del envío</div><div class="panel-sub">El correlativo lo llenas manualmente.</div></div></div>
           <div class="form-grid">
@@ -296,6 +300,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
 <div class="modal" id="previewModal">
   <div class="sheet-shell">
     <div class="sheet-actions">
+
       <div>Vista previa de la boleta. Usa imprimir para guardar en PDF.</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="msec" onclick="closePreview()">Cerrar</button>
@@ -397,12 +402,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
+
 const SERVICE_ITEM_URL = 'https://pacunam.maps.arcgis.com/home/item.html?id=2c0cbdfd0c5a421b90d28a7334c12196';
 const SERVICE_URL = 'https://services3.arcgis.com/9GZJC0D1FF3Zfm0K/ArcGIS/rest/services/survey123_39f772da5e694ec389cf4da11dcdb0ba_results/FeatureServer/0';
 const QUERY_URL = SERVICE_URL + '/query?where=1=1&outFields=*&returnGeometry=true&f=json';
-const CONCESION_FIELD_CANDIDATES = ['concesion','concesión','Concesion','Concesión','unidad_manejo','unidad_de_manejo','umf','concession'];
+const CONCESION_FIELD_CANDIDATES = ['concesi_n','concesion','concesión','Concesion','Concesión','unidad_manejo','unidad_de_manejo','umf','concession'];
+const CONCESION_FIELD_FIXED = 'concesi_n';
 let currentUser = null;
-let concesionFieldDetected = null;
+let concesionFieldDetected = CONCESION_FIELD_FIXED;
 let DB = [];
 let flt = { s:'', b:'', c:'', t:'', e:'' };
 let filtered = [];
@@ -423,6 +430,9 @@ async function loadData(){
     const data = await res.json();
     if(data.error) throw new Error(data.error.message || 'Error');
     concesionFieldDetected = detectConcesionField(data.features || []);
+    if(!concesionFieldDetected){
+      throw new Error('No se encontró el campo de concesión en la capa.');
+    }
     DB = (data.features || []).map(f => mapFeature(f)).filter(r => allowRecordForCurrentUser(r));
     fillFilters();
     applyFilters();
@@ -440,6 +450,7 @@ async function loadData(){
 function detectConcesionField(features){
   const attrs = features?.[0]?.attributes || {};
   const keys = Object.keys(attrs);
+  if (keys.includes(CONCESION_FIELD_FIXED)) return CONCESION_FIELD_FIXED;
   return CONCESION_FIELD_CANDIDATES.find(k => keys.includes(k)) || null;
 }
 
@@ -479,7 +490,7 @@ function mapFeature(f){
 function allowRecordForCurrentUser(r){
   if(!currentUser) return false;
   if(currentUser.role === 'Administrador') return true;
-  if(!concesionFieldDetected) return true;
+  if(!concesionFieldDetected) return false;
   return r.concesionNorm === normalizeConcesion(currentUser.concesion);
 }
 
