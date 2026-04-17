@@ -72,6 +72,93 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
 @media (max-width:900px){.mwrap,.cg,.doc-header,.summary-wrap,.sign-grid{grid-template-columns:1fr}.summary-right{border-left:0;border-top:1px solid #111827}.sign-col{border-right:0}.box-grid{grid-template-columns:150px 1fr}.form-grid{grid-template-columns:1fr}.span-2,.span-3{grid-column:auto}.logo-side{min-height:auto}.logo-side img{max-width:100px;max-height:74px}}
 @media (max-width:768px){#sb{transform:translateX(-100%)}#sb.mob{transform:translateX(0)}#mn{margin-left:0!important}#ct{padding:12px}.fbar{flex-direction:column}.fi.w{width:100%}.dg{grid-template-columns:1fr}}
 
+
+.sb-backdrop{position:fixed;inset:0;background:rgba(3,9,18,.62);backdrop-filter:blur(2px);z-index:990;display:none}
+body.menu-open{overflow:hidden}
+.mobile-tab-hint{display:none}
+.mobile-kpi-note{display:none}
+.table-mobile-note{display:none}
+
+@media (max-width:1024px){
+  #tb{padding:0 12px}
+  .tb-r{gap:6px}
+  .tb-btn{padding:0 10px}
+  .fbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+  .f-clr{margin-left:0;width:100%;justify-content:center}
+  .fi.w,.fs{min-width:0;width:100%}
+  .panel-h{padding:12px 14px}
+  .tscr{max-width:100%}
+}
+
+@media (max-width:768px){
+  .sb-backdrop.show{display:block}
+  #sb{width:min(86vw,320px);box-shadow:var(--sh)}
+  #sb.mob{transform:translateX(0)}
+  #tb{height:auto;min-height:var(--hh);padding:10px 12px;align-items:flex-start;flex-wrap:wrap}
+  #tb>div:first-of-type{flex:1;min-width:0}
+  .pg-t{font-size:14px}
+  .pg-s{font-size:10px;line-height:1.35}
+  .tb-r{width:100%;margin-left:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tb-btn,.user-badge{width:100%;justify-content:center}
+  .user-badge{border-radius:12px;padding:9px 10px}
+  #ct{padding:10px}
+  .vtabs{width:100%;overflow:auto;scrollbar-width:none;flex-wrap:nowrap}
+  .vtab{white-space:nowrap;flex:0 0 auto}
+  .mobile-tab-hint{display:block;font-size:10px;color:var(--tx3);margin:-6px 0 10px 2px}
+  .fbar{grid-template-columns:1fr;padding:12px}
+  .fg{width:100%}
+  .sg{grid-template-columns:1fr 1fr;gap:10px}
+  .sc{padding:13px}
+  .sc-v{font-size:20px}
+  .cc{padding:12px}
+  .cc-wrap{height:240px}
+  .layout-2,.mwrap{grid-template-columns:1fr;gap:12px}
+  #map{height:420px}
+  .msd{order:2}
+  .panel,.form-card,.msd{border-radius:12px}
+  .table-mobile-note{display:block;font-size:10px;color:var(--tx3);padding:0 14px 10px}
+
+  /* Inventario: ocultar columnas secundarias */
+  #vp-table thead th:nth-child(4), #vp-table tbody td:nth-child(4),
+  #vp-table thead th:nth-child(6), #vp-table tbody td:nth-child(6),
+  #vp-table thead th:nth-child(7), #vp-table tbody td:nth-child(7),
+  #vp-table thead th:nth-child(10), #vp-table tbody td:nth-child(10),
+  #vp-table thead th:nth-child(11), #vp-table tbody td:nth-child(11),
+  #vp-table thead th:nth-child(12), #vp-table tbody td:nth-child(12),
+  #vp-table thead th:nth-child(14), #vp-table tbody td:nth-child(14){display:none}
+  #vp-table table{min-width:760px}
+
+  /* Envío: versión compacta */
+  #vp-envio thead th:nth-child(2), #vp-envio tbody td:nth-child(2),
+  #vp-envio thead th:nth-child(3), #vp-envio tbody td:nth-child(3),
+  #vp-envio thead th:nth-child(4), #vp-envio tbody td:nth-child(4),
+  #vp-envio thead th:nth-child(8), #vp-envio tbody td:nth-child(8){display:none}
+  #vp-envio table{min-width:620px}
+  .form-grid{padding:14px;grid-template-columns:1fr!important}
+  .form-grid .span-2,.form-grid .span-3{grid-column:auto}
+  .print-opt{align-items:flex-start}
+  .mov,.modal{padding:8px}
+  .mbox{max-height:96vh}
+  .sheet-shell{width:100%;max-height:95vh;border-radius:14px}
+  .sheet-actions{padding:10px;align-items:stretch}
+  .sheet-actions>div:last-child{width:100%;display:grid!important;grid-template-columns:1fr 1fr}
+  .doc{padding:10px}
+  .doc-table th,.doc-table td,.summary-table th,.summary-table td,.cell{font-size:11px;padding:6px}
+}
+
+@media (max-width:560px){
+  .login-card{padding:22px 18px;border-radius:18px}
+  .sg{grid-template-columns:1fr}
+  .cg{gap:10px}
+  .cc-wrap{height:220px}
+  #map{height:340px}
+  .tb-r{grid-template-columns:1fr 1fr}
+  .tb-btn span.d-none.d-md-inline{display:inline!important}
+  .summary-head{font-size:14px}
+  .sign-row{grid-template-columns:1fr;gap:6px}
+  .foot{flex-direction:column;align-items:flex-start}
+}
+
 .login-overlay{position:fixed;inset:0;z-index:5000;background:radial-gradient(circle at top,#12314d 0%,#07121d 45%,#040b12 100%);display:flex;align-items:center;justify-content:center;padding:24px}
 .login-card{width:min(460px,96vw);background:rgba(11,26,40,.96);border:1px solid var(--bd2);border-radius:22px;box-shadow:var(--sh);padding:28px}
 .login-brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}.login-brand .logo-mark{width:46px;height:46px;font-size:18px}.login-brand h1{font-size:20px;margin:0}.login-brand p{margin:2px 0 0;color:var(--tx2);font-size:12px}
@@ -140,6 +227,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
   </div>
 </div>
 
+
+<div id="sb-backdrop" class="sb-backdrop hidden-app" onclick="closeMobileSidebar()"></div>
 <nav id="sb" class="hidden-app">
   <div class="sb-hd">
     <div class="logo-mark"><i class="fa-solid fa-tree"></i></div>
@@ -196,6 +285,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
       <button class="f-clr" onclick="rf()"><i class="fa-solid fa-xmark"></i> Limpiar</button>
     </div>
     <div class="f-chips" id="f-chips"></div>
+    <div class="mobile-tab-hint">Desliza las pestañas si no caben en pantalla.</div>
     <div class="vtabs">
       <button class="vtab on" id="tab-stats" onclick="sv('stats')"><i class="fa-solid fa-gauge-high"></i>Estadísticas</button>
       <button class="vtab" id="tab-table" onclick="sv('table')"><i class="fa-solid fa-table-cells"></i>Inventario</button>
@@ -219,6 +309,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
       <div class="layout-2">
         <section class="panel">
           <div class="panel-h"><div><div class="panel-t">Registros del inventario</div><div class="panel-sub" id="th-c"></div></div></div>
+          <div class="table-mobile-note">En teléfono se ocultan algunas columnas para facilitar la lectura.</div>
           <div class="tscr">
             <table>
               <thead>
@@ -269,6 +360,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--c-navy);color:var(--tx);m
           <div class="sg" id="shipmentStats"></div>
           <div class="panel">
             <div class="panel-h"><div><div class="panel-t">Registros incluidos en el envío</div><div class="panel-sub">Selecciona registros desde la tabla del inventario.</div></div></div>
+            <div class="table-mobile-note">La tabla del envío se compacta automáticamente en celular.</div>
             <div class="tscr" style="max-height:420px">
               <table>
                 <thead>
@@ -645,7 +737,9 @@ function setAppVisibility(isLogged){
   document.getElementById('loginOverlay').style.display = isLogged ? 'none' : 'flex';
   document.getElementById('sb').classList.toggle('hidden-app', !isLogged);
   document.getElementById('mn').classList.toggle('hidden-app', !isLogged);
+  document.getElementById('sb-backdrop')?.classList.toggle('hidden-app', !isLogged);
   document.getElementById('userBadge').style.display = isLogged ? 'flex' : 'none';
+  if(!isLogged && typeof closeMobileSidebar === 'function') closeMobileSidebar();
 }
 
 function showLoginError(msg='Correo o contraseña incorrectos.'){
@@ -1094,9 +1188,36 @@ function expCSV(){
 function reload(){ loadData(); }
 function cm(id){ document.getElementById(id).classList.remove('on'); }
 document.addEventListener('click',e=>{ if(e.target===document.getElementById('mo-d')) cm('mo-d'); if(e.target===document.getElementById('previewModal')) closePreview(); });
-let sbC=false; function togSB(){ if(window.innerWidth<=768){document.getElementById('sb').classList.toggle('mob'); return;} sbC=!sbC; document.getElementById('sb').classList.toggle('col',sbC); document.getElementById('mn').classList.toggle('ex',sbC); if(document.getElementById('vp-map').classList.contains('on')&&lmap) setTimeout(()=>lmap.invalidateSize(),250); }
+let sbC=false;
+function closeMobileSidebar(){
+  document.getElementById('sb').classList.remove('mob');
+  document.getElementById('sb-backdrop')?.classList.remove('show');
+  document.body.classList.remove('menu-open');
+}
+function syncResponsiveUI(){
+  if(window.innerWidth>768){
+    closeMobileSidebar();
+  }
+  if(document.getElementById('vp-map').classList.contains('on')&&lmap){
+    setTimeout(()=>lmap.invalidateSize(),180);
+  }
+}
+function togSB(){
+  if(window.innerWidth<=768){
+    document.getElementById('sb').classList.toggle('mob');
+    document.getElementById('sb-backdrop')?.classList.toggle('show');
+    document.body.classList.toggle('menu-open');
+    return;
+  }
+  sbC=!sbC;
+  document.getElementById('sb').classList.toggle('col',sbC);
+  document.getElementById('mn').classList.toggle('ex',sbC);
+  if(document.getElementById('vp-map').classList.contains('on')&&lmap) setTimeout(()=>lmap.invalidateSize(),250);
+}
 const VM={ stats:['Panel General','Resumen estadístico del inventario forestal'], table:['Inventario','Selecciona registros para enviar'], map:['Mapa','Distribución geoespacial de registros'], envio:['Formulario de envío','Completa la boleta con los registros seleccionados'] };
-function sv(v){ document.querySelectorAll('.vp').forEach(e=>e.classList.remove('on')); document.querySelectorAll('.vtab').forEach(e=>e.classList.remove('on')); document.querySelectorAll('.sn-btn').forEach(e=>e.classList.remove('on')); document.getElementById('vp-'+v).classList.add('on'); document.getElementById('tab-'+v).classList.add('on'); const nb={stats:0,table:1,map:2,envio:3}; document.querySelectorAll('.sn-btn')[nb[v]]?.classList.add('on'); const [t,s]=VM[v]; document.getElementById('pg-t').textContent=t; document.getElementById('pg-s').textContent=s; if(v==='map'){ if(!lmap) initMap(); setTimeout(()=>{ lmap.invalidateSize(); if(lmap._pendingBounds){ lmap.fitBounds(lmap._pendingBounds,{maxZoom:16}); lmap._pendingBounds=null; } else renderMap(filtered); },120);} }
+function sv(v){ document.querySelectorAll('.vp').forEach(e=>e.classList.remove('on')); document.querySelectorAll('.vtab').forEach(e=>e.classList.remove('on')); document.querySelectorAll('.sn-btn').forEach(e=>e.classList.remove('on')); document.getElementById('vp-'+v).classList.add('on'); document.getElementById('tab-'+v).classList.add('on'); const nb={stats:0,table:1,map:2,envio:3}; document.querySelectorAll('.sn-btn')[nb[v]]?.classList.add('on'); const [t,s]=VM[v]; document.getElementById('pg-t').textContent=t; document.getElementById('pg-s').textContent=s; if(window.innerWidth<=768) closeMobileSidebar(); if(v==='map'){ if(!lmap) initMap(); setTimeout(()=>{ lmap.invalidateSize(); if(lmap._pendingBounds){ lmap.fitBounds(lmap._pendingBounds,{maxZoom:16}); lmap._pendingBounds=null; } else renderMap(filtered); },180);} }
+window.addEventListener('resize', syncResponsiveUI);
+window.addEventListener('orientationchange', syncResponsiveUI);
 
 document.getElementById('selectPage').addEventListener('change', (e)=>{ if(e.target.checked) filtered.forEach(r=>selected.set(r.id,r)); else filtered.forEach(r=>selected.delete(r.id)); renderTable(filtered); renderSelected(); renderShipmentSection(); renderMap(filtered); updateBoletaButtons(); });
 document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
