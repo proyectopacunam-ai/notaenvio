@@ -207,7 +207,7 @@ body.menu-open{overflow:hidden}
     <div class="login-form">
       <div>
         <label>Correo</label>
-        <input id="loginEmail" type="email" autocomplete="username" placeholder="Ej. correo@gmail.com">
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="Ej. correo@pacunam.org">
       </div>
       <div>
         <label>Contraseña</label>
@@ -282,6 +282,8 @@ body.menu-open{overflow:hidden}
       <div class="fg"><label>Cuadrante</label><select class="fs" id="f-c" onchange="af()"><option value="">Todos</option></select></div>
       <div class="fg"><label>Tipo</label><select class="fs" id="f-t" onchange="af()"><option value="">Todos</option></select></div>
       <div class="fg"><label>Especie</label><select class="fs" id="f-e" onchange="af()"><option value="">Todas</option></select></div>
+      <div class="fg"><label>Inicio</label><input class="fi" id="f-fi" type="date" onchange="af()"></div>
+      <div class="fg"><label>Final</label><input class="fi" id="f-ff" type="date" onchange="af()"></div>
       <button class="f-clr" onclick="rf()"><i class="fa-solid fa-xmark"></i> Limpiar</button>
     </div>
     <div class="f-chips" id="f-chips"></div>
@@ -462,7 +464,7 @@ let piesDoyleFieldDetected = null;
 let currentUser = null;
 let concesionFieldDetected = CONCESION_FIELD_FIXED;
 let DB = [];
-let flt = { s:'', b:'', c:'', t:'', e:'', con:[] };
+let flt = { s:'', b:'', c:'', t:'', e:'', fi:'', ff:'', con:[] };
 let filtered = [];
 let selected = new Map();
 let lmap = null;
@@ -594,15 +596,25 @@ function gf(){
     if (flt.c && String(r.cuadrante) !== flt.c) return false;
     if (flt.t && String(r.tipo) !== flt.t) return false;
     if (flt.e && String(r.especie) !== flt.e) return false;
+    if (flt.fi) {
+      if (!r.fechaMs) return false;
+      const start = new Date(flt.fi + 'T00:00:00').getTime();
+      if (r.fechaMs < start) return false;
+    }
+    if (flt.ff) {
+      if (!r.fechaMs) return false;
+      const end = new Date(flt.ff + 'T23:59:59.999').getTime();
+      if (r.fechaMs > end) return false;
+    }
     if (isAdmin() && flt.con.length && !flt.con.some(c => normalizeConcesion(c) === r.concesionNorm)) return false;
     return true;
   });
 }
 
-function af(){ flt.s=document.getElementById('f-s').value; flt.b=document.getElementById('f-b').value; flt.c=document.getElementById('f-c').value; flt.t=document.getElementById('f-t').value; flt.e=document.getElementById('f-e').value; flt.con=isAdmin()?getSelectedValues('f-con'):[]; applyFilters(); }
-function rf(){ flt={s:'',b:'',c:'',t:'',e:'',con:[]}; ['f-s','f-b','f-c','f-t','f-e'].forEach(id=>document.getElementById(id).value=''); const fCon=document.getElementById('f-con'); if(fCon) [...fCon.options].forEach(o=>o.selected=false); applyFilters(); }
-function rChips(){ const lbs=[]; if(flt.s) lbs.push(['Búsqueda: "'+flt.s+'"','s']); if(flt.b) lbs.push(['Bacadilla: '+flt.b,'b']); if(flt.c) lbs.push(['Cuadrante: '+flt.c,'c']); if(flt.t) lbs.push(['Tipo: '+flt.t,'t']); if(flt.e) lbs.push(['Especie: '+flt.e,'e']); if(isAdmin() && flt.con.length) lbs.push([`Concesión: ${flt.con.join(', ')}`,'con']); document.getElementById('f-chips').innerHTML = lbs.map(([lb,k])=>`<button class="chip" onclick="clChip('${k}')">${lb} <span>✕</span></button>`).join(''); }
-function clChip(k){ if(k==='con'){ flt.con=[]; const fCon=document.getElementById('f-con'); if(fCon) [...fCon.options].forEach(o=>o.selected=false); } else { flt[k]=''; const mp={s:'f-s',b:'f-b',c:'f-c',t:'f-t',e:'f-e'}; document.getElementById(mp[k]).value=''; } applyFilters(); }
+function af(){ flt.s=document.getElementById('f-s').value; flt.b=document.getElementById('f-b').value; flt.c=document.getElementById('f-c').value; flt.t=document.getElementById('f-t').value; flt.e=document.getElementById('f-e').value; flt.fi=document.getElementById('f-fi').value; flt.ff=document.getElementById('f-ff').value; flt.con=isAdmin()?getSelectedValues('f-con'):[]; applyFilters(); }
+function rf(){ flt={s:'',b:'',c:'',t:'',e:'',fi:'',ff:'',con:[]}; ['f-s','f-b','f-c','f-t','f-e','f-fi','f-ff'].forEach(id=>document.getElementById(id).value=''); const fCon=document.getElementById('f-con'); if(fCon) [...fCon.options].forEach(o=>o.selected=false); applyFilters(); }
+function rChips(){ const lbs=[]; if(flt.s) lbs.push(['Búsqueda: "'+flt.s+'"','s']); if(flt.b) lbs.push(['Bacadilla: '+flt.b,'b']); if(flt.c) lbs.push(['Cuadrante: '+flt.c,'c']); if(flt.t) lbs.push(['Tipo: '+flt.t,'t']); if(flt.e) lbs.push(['Especie: '+flt.e,'e']); if(flt.fi) lbs.push(['Inicio: '+flt.fi,'fi']); if(flt.ff) lbs.push(['Final: '+flt.ff,'ff']); if(isAdmin() && flt.con.length) lbs.push([`Concesión: ${flt.con.join(', ')}`,'con']); document.getElementById('f-chips').innerHTML = lbs.map(([lb,k])=>`<button class="chip" onclick="clChip('${k}')">${lb} <span>✕</span></button>`).join(''); }
+function clChip(k){ if(k==='con'){ flt.con=[]; const fCon=document.getElementById('f-con'); if(fCon) [...fCon.options].forEach(o=>o.selected=false); } else { flt[k]=''; const mp={s:'f-s',b:'f-b',c:'f-c',t:'f-t',e:'f-e',fi:'f-fi',ff:'f-ff'}; document.getElementById(mp[k]).value=''; } applyFilters(); }
 
 function applyFilters(){
   filtered = gf();
@@ -961,8 +973,25 @@ function getPrintBranding(){
   return PRINT_BRANDING[key] || PRINT_BRANDING.UAXACTUN;
 }
 
+function getFSCBlockByConcesion(concesion){
+  const key = normalizeConcesion(concesion);
+  if(key === 'UAXACTUN'){
+    return {
+      logo: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnVc1A80TPe1s-x-P8luQluoMfn207ySW0utWSnjyGsLkWSseFENC5ufCTSQ1fFB_2pKAOv_HhFLx-jcww4fGroGNo_IYPcBhpsh7vFVlF81ltk3ngqjEhEm3NNoWT0TDqt1ShzY892W8HLHUOerUEsYiUyuAkNOS-03__ydjMD1pbXWCJ5QrBCPA_f24/s16000/FSC_C021447_LOGO_portrait_Green_White%20(1).jpg.jpeg',
+      alt: 'FSC Uaxactún',
+      code: 'PBN-FM/COC-000161',
+      label: 'FSC 100%'
+    };
+  }
+  if(key === 'CARMELITA') return { logo:'', alt:'', code:'PBN-FM/COC-001469-J', label:'FSC 100%' };
+  if(key === 'YALOCH') return { logo:'', alt:'', code:'PBN-FM/COC-001469-I', label:'FSC 100%' };
+  if(key === 'AFISAP') return { logo:'', alt:'', code:'PBN-FM/COC-001469-D', label:'FSC 100%' };
+  return { logo:'', alt:'', code:'', label:'' };
+}
+
 function renderNormalPrintLayout(rows, includeDoyle){
   const branding = getPrintBranding();
+  const fscBlock = getFSCBlockByConcesion(rows?.[0]?.concesion || currentUser?.concesion || '');
   const summary = buildSummary(rows);
   const totalVol = rows.reduce((s,r)=>s + Number(r.volumen || 0), 0);
   const totalDoyle = rows.reduce((s,r)=>s + Number(r.piesDoyle || 0), 0);
@@ -1025,7 +1054,10 @@ function renderNormalPrintLayout(rows, includeDoyle){
       <tfoot><tr class="tot-row"><td colspan="5" style="text-align:center">TOTAL</td><td>${fmtNum(totalVol,2)}</td>${detailTotal}</tr></tfoot>
     </table>
     <div class="summary-wrap">
-      <div class="summary-left"></div>
+      <div class="summary-left" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px 12px;gap:14px">
+        ${fscBlock.logo ? `<img src="${fscBlock.logo}" alt="${escapeHtml(fscBlock.alt || 'FSC')}" style="max-width:140px;max-height:170px;object-fit:contain;display:block">` : ''}
+        ${(fscBlock.code || fscBlock.label) ? `<div style="font-weight:800;font-size:18px;line-height:1.45">${escapeHtml(fscBlock.code)}<br>${escapeHtml(fscBlock.label)}</div>` : ''}
+      </div>
       <div class="summary-right">
         <div class="summary-head">RESUMEN</div>
         <table class="summary-table">
@@ -1034,8 +1066,7 @@ function renderNormalPrintLayout(rows, includeDoyle){
         </table>
       </div>
     </div>
-    ${signBlock}
-    <div class="foot"><div><small>*T = troza &nbsp;&nbsp; *R = rama &nbsp;&nbsp; *RE = ramas escuadras</small></div><div>PBN-FM/COC-000161 &nbsp;&nbsp;&nbsp; FSC 100%</div></div>`;
+    ${signBlock}`;
 }
 
 function renderAdminPrintLayout(rows, includeDoyle){
