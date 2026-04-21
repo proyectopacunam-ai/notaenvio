@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,11 +12,11 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root {
-  --c-navy:#07121d; --c-n800:#0b1a28; --c-n700:#0f2236; --c-n600:#142c46; --c-n500:#1a3858;
-  --c-blue:#1355a8; --c-blue2:#1769cc; --c-blue3:#2196f3; --c-sky:#03a8d4; --c-sky-gl:rgba(3,168,212,.16);
-  --c-teal:#00897b; --c-gold:#e8a820; --c-ok:#1eb87a; --c-warn:#f59e0b; --c-err:#e8424e; --c-violet:#7c5cbf;
-  --s-1:#0d1f30; --s-2:#122538; --s-3:#182f46; --s-4:#1e3a55;
-  --bd:#1c3550; --bd2:#264c6e; --tx:#cce2f8; --tx2:#6499be; --tx3:#2f5878;
+  --c-navy:#081a12; --c-n800:#0d2419; --c-n700:#123021; --c-n600:#173c29; --c-n500:#1f4f35;
+  --c-blue:#2e7d32; --c-blue2:#388e3c; --c-blue3:#43a047; --c-sky:#66bb6a; --c-sky-gl:rgba(102,187,106,.16);
+  --c-teal:#2e7d32; --c-gold:#c6a85c; --c-ok:#4caf50; --c-warn:#f59e0b; --c-err:#e8424e; --c-violet:#7c5cbf;
+  --s-1:#0e2a1d; --s-2:#143524; --s-3:#1b4630; --s-4:#22583d;
+  --bd:#1e4d36; --bd2:#2e7d32; --tx:#d7f2e3; --tx2:#8bbfa1; --tx3:#4e7f63;
   --sb-w:280px; --sb-c:68px; --hh:60px; --r:14px; --rs:8px; --rx:5px;
   --sh:0 8px 30px rgba(0,0,0,.5); --shs:0 3px 14px rgba(0,0,0,.35);
   --ease:cubic-bezier(.4,0,.2,1); --t:.2s;
@@ -159,17 +160,99 @@ body.menu-open{overflow:hidden}
   .foot{flex-direction:column;align-items:flex-start}
 }
 
-.login-overlay{position:fixed;inset:0;z-index:5000;background:radial-gradient(circle at top,#12314d 0%,#07121d 45%,#040b12 100%);display:flex;align-items:center;justify-content:center;padding:24px}
-.login-card{width:min(460px,96vw);background:rgba(11,26,40,.96);border:1px solid var(--bd2);border-radius:22px;box-shadow:var(--sh);padding:28px}
-.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}.login-brand .logo-mark{width:46px;height:46px;font-size:18px}.login-brand h1{font-size:20px;margin:0}.login-brand p{margin:2px 0 0;color:var(--tx2);font-size:12px}
-.login-form{display:grid;gap:14px}.login-form label{display:block;font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}.login-form input{width:100%;background:var(--s-2);border:1px solid var(--bd);color:var(--tx);border-radius:12px;padding:11px 12px;font-family:'DM Sans',sans-serif}
-.login-help{margin-top:14px;padding:10px 12px;border:1px dashed var(--bd2);border-radius:12px;font-size:11px;color:var(--tx2);line-height:1.5}
+
+.login-overlay{
+  position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(102,187,106,.16), transparent 34%),
+    radial-gradient(circle at 82% 84%, rgba(46,125,50,.18), transparent 38%),
+    linear-gradient(135deg,#081a12 0%,#0d2419 45%,#020806 100%);
+}
+.login-overlay::before{
+  content:'';position:absolute;inset:-8%;
+  background:
+    repeating-linear-gradient(115deg, rgba(255,255,255,.028) 0 2px, transparent 2px 18px),
+    radial-gradient(circle at 30% 30%, rgba(198,168,92,.06), transparent 25%),
+    radial-gradient(circle at 70% 55%, rgba(102,187,106,.05), transparent 22%);
+  opacity:.65;pointer-events:none;animation:forestMist 16s ease-in-out infinite alternate;
+}
+.login-overlay::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), transparent 25%, transparent 75%, rgba(0,0,0,.16));
+}
+.login-card{
+  position:relative;z-index:1;width:min(460px,96vw);padding:28px;
+  background:linear-gradient(180deg, rgba(13,36,25,.78), rgba(13,36,25,.68));
+  border:1px solid rgba(102,187,106,.22);border-radius:22px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 20px 60px rgba(0,0,0,.65), inset 0 0 0 1px rgba(102,187,106,.08);
+  overflow:hidden;
+}
+.login-card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.07), transparent 28%, transparent 72%, rgba(102,187,106,.06));
+}
+.login-card::after{
+  content:'';position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(198,168,92,.45), rgba(102,187,106,.55), transparent);
+  pointer-events:none;
+}
+.login-brand{position:relative;display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.login-brand .logo-mark{width:150px;height:104px;border-radius:0;background:transparent;box-shadow:none;padding:0;justify-content:flex-start;align-items:flex-start;flex-shrink:0}
+.login-brand h1{font-size:20px;margin:4px 0 0;line-height:1.08;text-shadow:0 1px 0 rgba(0,0,0,.25);max-width:540px}
+.login-brand p{margin:8px 0 0;color:var(--tx2);font-size:12px;line-height:1.35}
+.logo-login{
+  width:150px!important;height:104px!important;border-radius:0!important;flex-shrink:0;
+  background:transparent!important;
+  border:none!important;
+  display:flex;align-items:flex-start;justify-content:flex-start;
+  box-shadow:none!important;
+  padding:0!important;
+}
+.logo-login img{
+  width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 5px 14px rgba(255,255,255,.08)) drop-shadow(0 8px 20px rgba(0,0,0,.22));
+}
+.login-form{display:grid;gap:14px;position:relative;z-index:1}
+.login-form label{display:block;font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.login-form input{
+  width:100%;background:rgba(20,53,36,.7);border:1px solid rgba(102,187,106,.2);color:var(--tx);
+  border-radius:12px;padding:11px 12px;font-family:'DM Sans',sans-serif;transition:all .2s ease;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.login-form input::placeholder{color:rgba(215,242,227,.42)}
+.login-form input:focus{
+  border-color:#66bb6a;box-shadow:0 0 0 2px rgba(102,187,106,.2), inset 0 1px 0 rgba(255,255,255,.04);outline:none;
+  background:rgba(20,53,36,.88);
+}
+.login-form .mpri{
+  background:linear-gradient(135deg,#2e7d32,#43a047);border:none;font-weight:600;letter-spacing:.3px;
+  box-shadow:0 6px 20px rgba(0,0,0,.5);position:relative;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.login-form .mpri::before{
+  content:'';position:absolute;inset:0;transform:translateX(-115%);
+  background:linear-gradient(110deg, transparent 20%, rgba(255,255,255,.22) 48%, transparent 76%);
+  transition:transform .7s ease;
+}
+.login-form .mpri:hover{background:linear-gradient(135deg,#388e3c,#66bb6a);transform:translateY(-1px);filter:saturate(1.05)}
+.login-form .mpri:hover::before{transform:translateX(115%)}
+.login-help{
+  position:relative;z-index:1;margin-top:14px;padding:12px 14px;border:1px solid rgba(102,187,106,.18);
+  border-radius:14px;font-size:11px;color:var(--tx2);line-height:1.55;
+  background:linear-gradient(180deg, rgba(16,43,29,.54), rgba(9,24,17,.3));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
 .login-error{display:none;background:rgba(232,66,78,.12);border:1px solid rgba(232,66,78,.32);color:#ffb4be;padding:10px 12px;border-radius:12px;font-size:12px}
 .login-error.show{display:block}.hidden-app{display:none}.user-badge{display:flex;align-items:center;gap:8px;background:var(--s-3);border:1px solid var(--bd);border-radius:999px;padding:6px 10px;color:var(--tx);font-size:11px;font-weight:600}.user-badge i{color:var(--c-sky)}
 .print-opt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--bd);border-radius:12px;background:var(--s-2)}
 .print-opt input{margin-top:3px;transform:scale(1.05)}
 .print-opt .ttl{font-size:12px;font-weight:700;color:var(--tx)}
 .print-opt .sub{font-size:11px;color:var(--tx2);margin-top:2px}
+@keyframes forestMist{
+  0%{transform:translate3d(-1.5%, -1%, 0) scale(1)}
+  50%{transform:translate3d(1%, 1.2%, 0) scale(1.03)}
+  100%{transform:translate3d(2%, -1.5%, 0) scale(1.05)}
+}
+
 
 
 .admin-filter-card{margin:14px 12px 0;padding:12px;background:linear-gradient(180deg,rgba(18,37,56,.96),rgba(11,26,40,.96));border:1px solid var(--bd);border-radius:14px;box-shadow:var(--shs)}
@@ -197,10 +280,13 @@ body.menu-open{overflow:hidden}
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card">
     <div class="login-brand">
-      <div class="logo-mark"><i class="fa-solid fa-shield-halved"></i></div>
+      <div class="logo-mark logo-login"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJyyJPmDS_ErPcftMBxPd8qiTUNjQ5qHal4WumztD8nCln-IbX1i0VqlGeY9rl_Mt5asZVpyAFbQVRP4F5iejtkCaUP0DM655bQ0DiIVbABbUDFGEZrSqDDaR_qHoqA5ZI9uLmitpWU-myuFZf-ThHP6BiIvIgdi9916nAPLmAP2GIssHue23FE7XYHA8/s636/inilogo.jpeg" alt="PACU TRACK"></div>
       <div>
-        <h1>Acceso al sistema de nota de envíos</h1>
-        <p>Ingresa con tu correo y contraseña.</p>
+	   <br>
+       <h1 style="text-align:center;">-Aplicación Forestal-</h1>
+	   <p style="text-align:center;">Trazabilidad/Cadena de Custodia</p>
+		
+        
       </div>
     </div>
     <div class="login-error" id="loginError">Correo o contraseña incorrectos.</div>
@@ -215,15 +301,18 @@ body.menu-open{overflow:hidden}
       </div>
       <button class="mpri" onclick="login()"><i class="fa-solid fa-right-to-bracket"></i> Ingresar</button>
     </div>
-    <div class="login-help" style="text-align: center; font-size: 14px;  margin-top: 20px;">
-        Sistema de trazabilidad desarrollado por la 
-  <strong>Fundación Patrimonio Cultural y Natural Maya (PACUNAM)</strong> 
-  para el fortalecimiento de la gestión sostenible de concesiones forestales.
+    <div class="login-help" style="text-align:center; font-size:13px; margin-top:20px; line-height:1.6;">
   
+  Aplicación forestal desarrollada por<br>
+  Fundación Patrimonio Cultural y Natural Maya (PACUNAM)<br>
+  para el fortalecimiento de la gestión sostenible de<br>
+  concesiones forestales en la RBM, Petén, Guatemala
+
   <br><br>
-  
-  © 2026 Todos los derechos reservados.
-    </div>
+
+  PACUNAM, todos los derechos reservados © 2026
+
+</div>
   </div>
 </div>
 
@@ -233,7 +322,7 @@ body.menu-open{overflow:hidden}
   <div class="sb-hd">
     <div class="logo-mark"><i class="fa-solid fa-tree"></i></div>
     <div class="logo-txt">
-      <div class="l1">Sistema <span>Inteligente</span></div>
+      <div class="l1">Aplicación <span>Forestal</span></div>
       <div class="l2">Inventario + envío interno</div>
     </div>
   </div>
@@ -251,6 +340,10 @@ body.menu-open{overflow:hidden}
       <div class="af-sub">Ctrl o Cmd + clic para seleccionar varias</div>
     </div>
   </div>
+  <div style="padding:12px 14px; display:flex; justify-content:center;">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJyyJPmDS_ErPcftMBxPd8qiTUNjQ5qHal4WumztD8nCln-IbX1i0VqlGeY9rl_Mt5asZVpyAFbQVRP4F5iejtkCaUP0DM655bQ0DiIVbABbUDFGEZrSqDDaR_qHoqA5ZI9uLmitpWU-myuFZf-ThHP6BiIvIgdi9916nAPLmAP2GIssHue23FE7XYHA8/s636/inilogo.jpeg"
+       style="width:110px; height:auto; object-fit:contain;">
+</div>
   <div class="sb-ft">
     <div class="sb-av">NC</div>
     <div class="sb-usr"><div class="un">Néstor Caal</div><div class="ur">Survey123 / ArcGIS</div></div>
@@ -1153,7 +1246,7 @@ function renderAdminPrintLayout(rows, includeDoyle){
         </div>
       </div>
     </div>
-    <div class="foot"><div><small>Reporte administrativo consolidado generado automáticamente desde el Sistema Inteligente de trazabilidad</small></div><div>PACUNAM · ${escapeHtml(getPreviewDate())}</div></div>`;
+    <div class="foot"><div><small>Reporte generado automáticamente desde el Sistema Inteligente de Trazabilidad-PACU TRACK -</small></div><div>PACUNAM · ${escapeHtml(getPreviewDate())}</div></div>`;
 }
 
 function openPreview(){
