@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -549,7 +551,64 @@ body.menu-open{overflow:hidden}
 
 const SERVICE_ITEM_URL = 'https://pacunam.maps.arcgis.com/home/item.html?id=2c0cbdfd0c5a421b90d28a7334c12196';
 const SERVICE_URL = 'https://services3.arcgis.com/9GZJC0D1FF3Zfm0K/ArcGIS/rest/services/survey123_39f772da5e694ec389cf4da11dcdb0ba_results/FeatureServer/0';
-const QUERY_URL = SERVICE_URL + '/query?where=1=1&outFields=*&returnGeometry=true&f=json';
+const QUERY_PAGE_SIZE = 500;
+const QUERY_MAX_RECORDS = 100000;
+const TABLE_RENDER_LIMIT = 100000;
+const MAP_RENDER_LIMIT = 3000;
+
+function buildQueryParams(obj){
+  const params = new URLSearchParams();
+  Object.entries(obj).forEach(([k,v]) => params.set(k, String(v)));
+  return params.toString();
+}
+
+async function fetchArcGISJson(params){
+  const body = buildQueryParams(params);
+  let res;
+  try{
+    res = await fetch(SERVICE_URL + '/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+      body
+    });
+  }catch(err){
+    res = await fetch(SERVICE_URL + '/query?' + body);
+  }
+  if(!res.ok) throw new Error('HTTP ' + res.status + ' al consultar ArcGIS');
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message || 'Error en ArcGIS');
+  return data;
+}
+
+
+async function loadObjectIds(){
+  const data = await fetchArcGISJson({ where:'1=1', returnIdsOnly:'true', f:'json' });
+  const ids = (data.objectIds || []).sort((a,b)=>a-b).slice(0, QUERY_MAX_RECORDS);
+  return { ids, objectIdFieldName: data.objectIdFieldName || 'objectid' };
+}
+
+async function loadFeaturesByObjectIds(ids, objectIdFieldName){
+  const all = [];
+  for(let i=0; i<ids.length; i+=QUERY_PAGE_SIZE){
+    const chunk = ids.slice(i, i + QUERY_PAGE_SIZE);
+    const data = await fetchArcGISJson({
+      where: `${objectIdFieldName} IN (${chunk.join(',')})`,
+      outFields: '*', returnGeometry: 'true', f: 'json',
+      orderByFields: `${objectIdFieldName} ASC`
+    });
+    all.push(...(data.features || []));
+    if(i === 0 || (i + QUERY_PAGE_SIZE) % 5000 === 0){
+      toast(`Cargando registros: ${Math.min(i + QUERY_PAGE_SIZE, ids.length).toLocaleString('es-GT')} de ${ids.length.toLocaleString('es-GT')}`, 'in');
+    }
+  }
+  return all;
+}
+
+async function loadAllArcGISFeatures(){
+  const { ids, objectIdFieldName } = await loadObjectIds();
+  if(!ids.length) return [];
+  return await loadFeaturesByObjectIds(ids, objectIdFieldName);
+}
 const CONCESION_FIELD_CANDIDATES = ['concesi_n','concesion','concesión','Concesion','Concesión','unidad_manejo','unidad_de_manejo','umf','concession'];
 const CONCESION_FIELD_FIXED = 'concesi_n';
 const PIE_DOYLE_FIELD_CANDIDATES = ['pies_doyle','pie_doyle','piesdoyle','pies_doyles','pies_doyle_total','p_doyle'];
@@ -574,26 +633,21 @@ function toast(msg,tp='in'){ const ic={ok:'fa-circle-check',er:'fa-circle-xmark'
 
 async function loadData(){
   try{
-    const res = await fetch(QUERY_URL);
-    const data = await res.json();
-    if(data.error) throw new Error(data.error.message || 'Error');
-    concesionFieldDetected = detectConcesionField(data.features || []);
-    piesDoyleFieldDetected = detectPiesDoyleField(data.features || []);
-    if(!concesionFieldDetected){
-      throw new Error('No se encontró el campo de concesión en la capa.');
-    }
-    DB = (data.features || []).map(f => mapFeature(f)).filter(r => allowRecordForCurrentUser(r));
+    toast('Cargando hasta 100,000 registros desde ArcGIS...', 'in');
+    const features = await loadAllArcGISFeatures();
+    concesionFieldDetected = detectConcesionField(features || []);
+    piesDoyleFieldDetected = detectPiesDoyleField(features || []);
+    if(!concesionFieldDetected){ throw new Error('No se encontró el campo de concesión en la capa.'); }
+    DB = (features || []).map(f => mapFeature(f)).filter(r => allowRecordForCurrentUser(r));
     fillFilters();
     applyFilters();
     const scope = currentUser?.role === 'Administrador' ? 'todas las concesiones' : (currentUser?.concesion || 'la concesión asignada');
-    const msg = concesionFieldDetected
-      ? `${DB.length} registros cargados para ${scope}`
-      : `Se cargaron ${DB.length} registros, pero no se detectó campo de concesión para filtrar automáticamente`;
-    toast(msg, concesionFieldDetected ? 'ok' : 'wn');
+    const limitMsg = features.length >= QUERY_MAX_RECORDS ? ` Límite configurado: ${QUERY_MAX_RECORDS.toLocaleString('es-GT')} .` : '';
+    toast(`${DB.length.toLocaleString('es-GT')} registros cargados para ${scope} .${limitMsg}`, 'ok');
     if(!piesDoyleFieldDetected) toast('No se detectó un campo de pies Doyle en la capa. Se mostrará 0.00 hasta configurarlo.', 'wn');
   }catch(e){
     console.error(e);
-    toast('Error al cargar datos desde ArcGIS','er');
+    toast('Error al cargar datos desde ArcGIS: ' + e.message,'er');
   }
 }
 
@@ -726,7 +780,7 @@ function renderStats(f){
   const especies = new Set(f.map(r=>r.especie).filter(Boolean)).size;
   const cuadrantes = new Set(f.map(r=>r.cuadrante).filter(Boolean)).size;
   document.getElementById('sg').innerHTML = `
-    <div class="sc" style="--sc-a:var(--c-blue3);--sc-ib:rgba(33,150,243,.15);--sc-ic:var(--c-blue3)"><div class="sc-hd"><div><div class="sc-v">${total}</div><div class="sc-l">Total de registros</div><div class="sc-s">Provenientes de Survey 123</div></div><div class="sc-ic"><i class="fa-solid fa-database"></i></div></div></div>
+    <div class="sc" style="--sc-a:var(--c-blue3);--sc-ib:rgba(33,150,243,.15);--sc-ic:var(--c-blue3)"><div class="sc-hd"><div><div class="sc-v">${total.toLocaleString('es-GT')}</div><div class="sc-l">Total de registros</div><div class="sc-s">Provenientes de Survey 123</div></div><div class="sc-ic"><i class="fa-solid fa-database"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-gold);--sc-ib:rgba(232,168,32,.15);--sc-ic:var(--c-gold)"><div class="sc-hd"><div><div class="sc-v">${fmtNum(volTotal,2)}</div><div class="sc-l">Volumen total (m³)</div><div class="sc-s">Suma del campo volumen</div></div><div class="sc-ic"><i class="fa-solid fa-cubes-stacked"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-sky);--sc-ib:rgba(3,168,212,.15);--sc-ic:var(--c-sky)"><div class="sc-hd"><div><div class="sc-v">${especies}</div><div class="sc-l">Especies distintas</div><div class="sc-s">Diversidad observada</div></div><div class="sc-ic"><i class="fa-solid fa-leaf"></i></div></div></div>
     <div class="sc" style="--sc-a:var(--c-ok);--sc-ib:rgba(30,184,122,.15);--sc-ic:var(--c-ok)"><div class="sc-hd"><div><div class="sc-v">${cuadrantes}</div><div class="sc-l">Cuadrantes activos</div><div class="sc-s">Cobertura espacial</div></div><div class="sc-ic"><i class="fa-solid fa-table-cells-large"></i></div></div></div>`;
@@ -739,7 +793,7 @@ function renderCharts(f){
   const CD = { g:'rgba(26,56,88,.9)', tk:'rgba(100,153,190,.9)' };
   const especieCount = {}; f.forEach(r => especieCount[r.especie] = (especieCount[r.especie]||0)+1);
   const especieTop = topN(especieCount, 8);
-  dk('c1'); document.getElementById('cb1').textContent = f.length + ' registros';
+  dk('c1'); document.getElementById('cb1').textContent = f.length.toLocaleString('es-GT') + ' registros';
   chts.c1 = new Chart(document.getElementById('ch1').getContext('2d'), { type:'bar', data:{ labels: especieTop.map(d=>d[0]||'—'), datasets:[{ data: especieTop.map(d=>d[1]), backgroundColor:'rgba(33,150,243,.7)', borderRadius:6, borderSkipped:false }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}}}, y:{grid:{color:CD.g},ticks:{color:CD.tk,font:{family:'DM Sans'}},beginAtZero:true} } } });
   const tipoCount = {}; f.forEach(r => tipoCount[r.tipo] = (tipoCount[r.tipo]||0)+1);
   dk('c2'); document.getElementById('cb2').textContent = Object.keys(tipoCount).length + ' clases';
@@ -768,10 +822,12 @@ function renderCharts(f){
 }
 
 function renderTable(f){
-  document.getElementById('th-c').textContent = '(' + f.length + ' registro' + (f.length !== 1 ? 's' : '') + ')';
-  document.getElementById('tbody').innerHTML = f.map(r => `
+  const shown = f.slice(0, TABLE_RENDER_LIMIT);
+  const extra = f.length > TABLE_RENDER_LIMIT ? ` · Mostrando primeros ${TABLE_RENDER_LIMIT.toLocaleString('es-GT')}` : '';
+  document.getElementById('th-c').textContent = '(' + f.length.toLocaleString('es-GT') + ' registro' + (f.length !== 1 ? 's' : '') + extra + ')';
+  document.getElementById('tbody').innerHTML = shown.map(r => `
     <tr>
-      <td class="chk"><input type="checkbox" ${selected.has(r.id) ? 'checked' : ''} onchange="toggleShipment(${r.id})"></td>
+      <td class="chk"><input type="checkbox" ${selected.has(r.id) ? 'checked' : ""} onchange="toggleShipment(${r.id})"></td>
       <td class="tm">#${r.id}</td>
       <td>${safe(r.concesion)}</td>
       <td>${safe(r.bacadilla)}</td>
@@ -787,7 +843,7 @@ function renderTable(f){
       <td class="tm">${r.fecha}</td>
       <td><button class="ba v" onclick="viewRecord(${r.id})" title="Ver detalle"><i class="fa-solid fa-eye"></i></button></td>
     </tr>`).join('');
-  document.getElementById('selectPage').checked = f.length > 0 && f.every(r => selected.has(r.id));
+  document.getElementById('selectPage').checked = shown.length > 0 && shown.every(r => selected.has(r.id));
 }
 
 function toggleShipment(id){
