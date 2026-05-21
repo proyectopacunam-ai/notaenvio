@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -492,7 +493,28 @@ body.menu-open{overflow:hidden}
             <div><label>Color</label><input id="color" placeholder="Color"></div>
             <div><label>Despachado por</label><input id="despachadoPor" placeholder="Nombre"></div>
             <div><label>Conductor responsable</label><input id="conductorResp" placeholder="Nombre"></div>
-            <div><label>Encargado Aserradero</label><input id="encargadoAserradero" placeholder="Nombre"></div>
+            
+<div><label>Encargado Aserradero</label><input id="encargadoAserradero" placeholder="Nombre"></div>
+
+<div class="span-3" id="obsWrap" style="display:none">
+<label>Observaciones</label>
+
+<textarea
+id="observaciones"
+placeholder="Escriba observaciones adicionales del envío..."
+style="
+width:100%;
+min-height:90px;
+background:var(--s-2);
+border:1px solid var(--bd);
+border-radius:10px;
+padding:10px 12px;
+color:var(--tx);
+resize:vertical;
+font-family:'DM Sans',sans-serif;
+"></textarea>
+</div>
+
             <div class="span-3">
               <label>Opciones de impresión</label>
               <div class="print-opt">
@@ -883,6 +905,24 @@ function renderShipmentSection(){
       <td>${fmtNum(r.piesDoyle,2)}</td>
       <td><button class="rm" onclick="toggleShipment(${r.id})">Quitar</button></td>
     </tr>`).join('') : '<tr><td colspan="9" style="color:#8fb0cf">No has seleccionado registros todavía.</td></tr>';
+  toggleObservacionesAFISAP();
+}
+
+
+function toggleObservacionesAFISAP(){
+  const obsWrap = document.getElementById('obsWrap');
+  if(!obsWrap) return;
+
+  const items = [...selected.values()];
+  if(!items.length){
+    obsWrap.style.display = 'none';
+    return;
+  }
+
+  const concesion = String(items[0]?.concesion || '').toUpperCase();
+  const esAFISAP = concesion.includes('AFISAP');
+
+  obsWrap.style.display = esAFISAP ? 'block' : 'none';
 }
 
 function updateBoletaButtons(){
@@ -1093,17 +1133,17 @@ const PRINT_BRANDING = {
     alt: 'Uaxactún'
   },
   CARMELITA: {
-    title: 'UNIDAD DE MANEJO CARMELITA, FLORES, PETÉN',
+    title: 'UNIDAD DE MANEJO CARMELITA, SAN ANDRES, PETÉN',
     logo: 'https://turismocooperativacarmelita.com/wp-content/themes/carmelita/images/lg.png',
     alt: 'Carmelita'
   },
   YALOCH: {
-    title: 'UNIDAD DE MANEJO YALOCH, FLORES, PETÉN',
+    title: 'UNIDAD DE MANEJO YALOCH, MELCHOR DE MENCOS, PETÉN',
     logo: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhRv5DU74k7QQXXocb2wDkKkhSC4_vMm8tzpP3-9iAlgrJIaP8CBlB3JlNSrp3aXGURL6CIRZkjABqsRnYXUpkhyphenhyphen9pxy1BaN25SlYtnpGYXXQrhfie813qbRuajT2OjFhoDMclFyrSStWWpYJHru1mhCJ7HQamyLxz9wwB7YmbwaFp5VbG3E7Z_GuA2jEM/s16000/logoyaloch.jpg',
     alt: 'Yaloch'
   },
   AFISAP: {
-    title: 'UNIDAD DE MANEJO AFISAP, FLORES, PETÉN',
+    title: 'UNIDAD DE MANEJO AFISAP, SAN ANDRES, PETÉN',
     logo: 'https://pbs.twimg.com/profile_images/992176392539459585/WAwRlddv_400x400.jpg',
     alt: 'AFISAP'
   }
@@ -1139,6 +1179,19 @@ function getFSCBlockByConcesion(concesion){
 function renderNormalPrintLayout(rows, includeDoyle){
   const branding = getPrintBranding();
   const fscBlock = getFSCBlockByConcesion(rows?.[0]?.concesion || currentUser?.concesion || '');
+  const esAFISAPBoleta = String(rows?.[0]?.concesion || currentUser?.concesion || '').toUpperCase().includes('AFISAP');
+  const observacionFormularioAFISAP = (document.getElementById('observaciones')?.value || '').trim();
+  const textoObservacionesAFISAP = observacionFormularioAFISAP || 'NINGUNA';
+  const observacionesBlockAFISAP = esAFISAPBoleta ? `
+    <div style="border-left:1px solid #111827;border-right:1px solid #111827;border-bottom:1px solid #111827;">
+      <div style="background:#1b3a22;color:#b7d9b2;padding:10px 14px;font-weight:800;font-size:15px;letter-spacing:.5px;text-transform:uppercase;">
+        OBSERVACIONES
+      </div>
+      <div style="min-height:90px;padding:14px;font-size:13px;line-height:1.5;white-space:pre-wrap;color:#111827;background:#ffffff;">
+        ${escapeHtml(textoObservacionesAFISAP)}
+      </div>
+    </div>
+  ` : '';
   const summary = buildSummary(rows);
   const totalVol = rows.reduce((s,r)=>s + Number(r.volumen || 0), 0);
   const totalDoyle = rows.reduce((s,r)=>s + Number(r.piesDoyle || 0), 0);
@@ -1224,7 +1277,8 @@ function renderNormalPrintLayout(rows, includeDoyle){
         </table>
       </div>
     </div>
-    ${signBlock}`;
+    ${signBlock}
+    ${observacionesBlockAFISAP}`;
 }
 
 function renderAdminPrintLayout(rows, includeDoyle){
@@ -1298,12 +1352,14 @@ function renderAdminPrintLayout(rows, includeDoyle){
           <p><b>Fuente:</b> registros visibles del sistema de trazabilidad y filtros activos aplicados por el administrador.</p>
         </div>
       </div>
-    </div>
-    <div class="foot"><div><small>Reporte generado automáticamente desde el Sistema Inteligente de Trazabilidad-PACU TRACK -</small></div><div>PACUNAM · ${escapeHtml(getPreviewDate())}</div></div>`;
+    
+</div>
+    
+<div class="foot"><div><small>Reporte generado automáticamente desde el Sistema Inteligente de Trazabilidad-PACU TRACK -</small></div><div>PACUNAM · ${escapeHtml(getPreviewDate())}</div></div>`;
 }
 
 function openPreview(){
-  const rows = getRowsForPreview();
+const rows = getRowsForPreview();
   if(isAdmin() && rows.length === 0){ toast('No hay registros visibles para generar el informe administrativo', 'wn'); return; }
   if(!isAdmin() && rows.length === 0){ toast('Selecciona al menos un registro para el envío','wn'); return; }
   const includeDoyle = document.getElementById('includeDoyleInBoleta')?.checked;
